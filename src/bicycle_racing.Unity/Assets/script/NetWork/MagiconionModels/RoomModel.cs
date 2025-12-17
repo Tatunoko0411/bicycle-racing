@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using static UnityEditor.PlayerSettings;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class RoomModel : BaseModel, IRoomHubReceiver
 {
@@ -27,7 +29,14 @@ public class RoomModel : BaseModel, IRoomHubReceiver
 
     //ユーザーの移動通知
     public Action<Guid,Vector3,Quaternion> OnMoveUser { get; set; }
-
+   //ユーザーのチェックポイント通過通知
+    public Action<Guid> OnPassCheckPoint { get; set; }
+   //ユーザーのゴール通知
+    public Action<Guid> OnGoalUser { get; set; }
+    //マッチング確定通知
+    public Action<int> OnMenberConfirmed { get; set; }
+    //ゲーム開始通知
+    public Action OnStartGame { get; set; }
     public Dictionary<Guid, JoinedUser> userTable { get; set; } = new Dictionary<Guid, JoinedUser>();
 
     //　MagicOnion接続処理
@@ -52,9 +61,9 @@ public class RoomModel : BaseModel, IRoomHubReceiver
         DisconnectAsync();
     }
 
-    public async UniTask JoinAsync(string roomName, int userId)
+    public async UniTask JoinAsync( int userId,int StageId)
     {
-        JoinedUser[] users = await roomHub.JoinAsync(roomName, userId);
+        JoinedUser[] users = await roomHub.JoinAsync(userId, StageId);
         foreach (JoinedUser user in users)
         {
             userTable[user.ConnectionId] = user;  //保持
@@ -69,14 +78,31 @@ public class RoomModel : BaseModel, IRoomHubReceiver
 
     }
 
+    public async UniTask ReadyAsync()
+    {
+        await roomHub.ReadyAsync();
+    }
+
     public async UniTask LeaveAsync()
     {
        await roomHub.LeaveAsync();     
     }
 
+
     public async UniTask MoveAsync(Vector3 pos,Quaternion rot)
     {
         await roomHub.MoveAsync(pos,rot);
+    }
+
+
+    public async UniTask PassCheckAsync()
+    { 
+        await roomHub.PassCheckAsync();
+    }
+
+    public async UniTask OnGoalAsync(int rank)
+    {
+        await roomHub.GoalAsync(rank);
     }
 
     //　入室通知 (IRoomHubReceiverインタフェースの実装)
@@ -118,7 +144,37 @@ public class RoomModel : BaseModel, IRoomHubReceiver
         }
     }
 
+    public void OnPassCheck(Guid ID)
+    {
+        JoinedUser user;
+        userTable.TryGetValue(ID, out user);
 
+        if (OnMoveUser != null)
+        {
+            OnPassCheckPoint(user.ConnectionId);
+        }
+    }
+
+    public  void OnGoal(Guid ID)
+    {
+        JoinedUser user;
+        userTable.TryGetValue(ID, out user);
+
+        if (OnMoveUser != null)
+        {
+            OnGoalUser(user.ConnectionId);
+        }
+    }
+
+    public void OnConfirmed(int BattleId)
+    {
+        OnMenberConfirmed(BattleId);
+    }
+
+    public void OnStart()
+    {
+        OnStartGame();
+    }
 }
 
 

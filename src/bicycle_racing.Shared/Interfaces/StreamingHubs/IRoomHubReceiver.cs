@@ -23,6 +23,14 @@ namespace bicycle_racing.Shared.Interfaces.StreamingHubs
         void OnLeave(Guid ID);
 
         void OnMove(Guid ID,Vector3 pos,Quaternion rot);
+
+        void OnPassCheck(Guid ID);
+
+        void OnGoal(Guid ID);
+
+        void OnConfirmed(int BattleId);
+
+        void OnStart();
     }
 
 }

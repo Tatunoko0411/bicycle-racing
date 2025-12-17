@@ -7,5 +7,7 @@ namespace bicycle_racing.Server.StreamingHubs
     {
         public JoinedUser JoinedUser;
         public Vector3 pos;
+        public int checkCount = 0;
+        public bool isReady = false; 
     }
 }

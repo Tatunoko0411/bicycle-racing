@@ -4,12 +4,17 @@ using System.Collections;
 public class MatchingManager : MonoBehaviour
 {
     
+    NetWorkManager netWorkManager;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Debug.Log("ŠJŽn‚µ‚Ü‚·");
-        StartCoroutine(StartGame());
+        netWorkManager = GameObject.Find("NetWorkManager").GetComponent<NetWorkManager>();
+
+        if (netWorkManager != null)
+        {
+            netWorkManager.JoinRoom(GameManager.StageId);
+        }
     }
 
     // Update is called once per frame
@@ -18,7 +23,7 @@ public class MatchingManager : MonoBehaviour
         
     }
 
-    IEnumerator StartGame()
+    public IEnumerator StartGame()
     {
         int cnt = 3;
         while (true)

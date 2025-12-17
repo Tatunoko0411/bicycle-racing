@@ -8,6 +8,10 @@ namespace rayzngames
 {
     public class BikeController : MonoBehaviour
     {
+        //TODO
+        //・対戦履歴作る
+        //・リザルト後の遷移類をちゃんとやる（順位表示とかも）
+
         BicycleVehicle bicycle;
         float DefaultMaxSteeringAngle;
         float DefaultLeanAngle;
@@ -17,9 +21,9 @@ namespace rayzngames
         public bool controllingBike;
 
         float increaseSpeed = 50f;
-        float decelerationSpeed = 0.15f;
+        float decelerationSpeed = 0.12f;
         float maxSpeed = 800f;
-        float BackSpeed = -100.0f;
+        float BackSpeed = -1000.0f;
         public float speed;
 
         float downTime;
@@ -29,11 +33,11 @@ namespace rayzngames
        public CheckPoint nowCheckPoint;
 
         //クリアしたチェックポイント数
-        int _checkCount;
-        public int checkCount => _checkCount;
+        public int checkCount;
 
+        public bool isGoal;
 
-        float DefaultSpeedLim = 22;
+        float DefaultSpeedLim = 20;
         float SpeedLim;
 
         bool isDrift; 
@@ -52,42 +56,91 @@ namespace rayzngames
 
         float SStime;
 
-
+        bool inSlope;
 
 
         [SerializeField] Slider powerSlider;
-        GameManager gameManager;
+        public GameManager gameManager;
         UIManager uiManager;
 
         Rigidbody rb;
 
         Quaternion turnRot;
 
+
+        [SerializeField] NetWorkManager net;
+
         //そのチェックポイントにおける進行度
         public float progress => nowCheckPoint.GetProgress(transform.position);
 
+
+        public float rogress = 0;
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Awake()
         {
-            rb = GetComponent<Rigidbody>(); 
-            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-            uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
-            bicycle = GetComponent<BicycleVehicle>();
-            speed = 0;
 
-            uiManager.InitPowerSlider(maxSpeed);
-            rap = 1;
+            InitBike();
+            
+        }
 
-            DefaultMaxSteeringAngle = bicycle.maxSteeringAngle;
-            DefaultLeanAngle = bicycle.maxLeanAngle;
-
-            nowCheckPoint = CheckPoint.StartPoint;
-
-            isStartDash = false;
+        private void Start()
+        {
+          
         }
         // Update is called once per frame
         void Update()
         {
+            rogress = progress;
+
+            var p0 = transform.position;
+
+            var v = nowCheckPoint.nextCheckPoint.transform.position - transform.position;
+            v.y = 0;
+            v = v.normalized * Time.deltaTime * speed;
+
+            //進行方向をすこし揺らす
+            v = turnRot * v;
+            var p1 = p0 + v;
+
+            if (nowCheckPoint.CheckIfPassed(p0, p1))
+            {
+                //チェックポイント通過
+                nowCheckPoint = nowCheckPoint.nextCheckPoint;
+                checkCount++;
+
+                if(controllingBike)
+                {
+                   net.PassCheck();
+                }
+
+                if (nowCheckPoint == CheckPoint.StartPoint)
+                {
+                    rap++;
+
+                    if (rap > 3)
+                    {
+                        Debug.Log("ゴール！");
+                        speed = 0;
+                        enabled = false;
+                        if (controllingBike)
+                        {
+                            //uiManager.GoalUI.SetActive(true);
+                            isGoal = true;
+                            net.Goal(rank);
+                        }
+                        return;
+                    }
+                    uiManager.UpdateRapTex(rap);
+                    Debug.Log("一周");
+                }
+                Debug.Log("通過");
+
+            }
+
+            if (!controllingBike)
+            {
+                return;
+            }
             //TODO:漕ぎすぎデバフ
 
             //スタート前からスピードを貯めれるようにしたいのでスピード関係を上に配置
@@ -100,13 +153,17 @@ namespace rayzngames
             if (downTime >= 0)
             {
                 downTime -= Time.deltaTime;
-                speed -= decelerationSpeed * 0.5f;
+                speed -= decelerationSpeed;
             }
            
 
             if (!isDrift && acceleTime <= 0)
             {
                 speed -= decelerationSpeed;
+            }
+            else
+            {
+                acceleTime -= Time.deltaTime;
             }
             if (speed < 0)
             {
@@ -115,6 +172,7 @@ namespace rayzngames
 
 
             uiManager.UpdatePowerSlider(speed);
+            uiManager.UpdateSpeedSlider(bicycle.currentSpeed);
 
             if (!gameManager.isStart) { return; }
 
@@ -128,12 +186,18 @@ namespace rayzngames
                 }
 
                 isStartDash = true;
+               
                 nowCheckPoint = CheckPoint.StartPoint;
             }
 
             if ((!bicycle.braking && speed >= 0))
             {
                 bicycle.verticalInput = speed;
+
+                if(bicycle.currentSpeed <= SpeedLim * 0.6f && speed >= maxSpeed*0.7f)
+                {
+                    rb.linearVelocity = rb.linearVelocity + (transform.forward * 0.01f);
+                }
             }
    
             bicycle.horizontalInput = Input.GetAxis("Horizontal");
@@ -163,18 +227,32 @@ namespace rayzngames
                 acceleTime -= Time.deltaTime;
             }
 
-            if(bicycle.currentSpeed >= SpeedLim)
+            if (bicycle.currentSpeed >= SpeedLim)
             {
 
                 Debug.Log("早すぎ");
-                rb.linearVelocity = new Vector3(
-                    rb.linearVelocity.x - (rb.linearVelocity.x * 0.05f),
-                    rb.linearVelocity.y,
-                    rb.linearVelocity.z - (rb.linearVelocity.z * 0.05f)
-                    );
+                rb.AddForce(transform.forward * (-30000f), ForceMode.Force);
+
+                uiManager.SetBikeAnimSpeed(20);
+            }
+            else if (bicycle.currentSpeed >= SpeedLim * 0.8f)
+            {
+                uiManager.SetBikeAnimSpeed(40);
+            }
+            else if (bicycle.currentSpeed >= SpeedLim * 0.6f)
+            {
+                uiManager.SetBikeAnimSpeed(50);
+            }
+            else if (bicycle.currentSpeed >= SpeedLim * 0.4f)
+            {
+                uiManager.SetBikeAnimSpeed(60);
+            }
+            else if (bicycle.currentSpeed < SpeedLim * 0.4f)
+            {
+                uiManager.SetBikeAnimSpeed(80);
             }
 
-            if(rb.linearVelocity.y >= 0.5f)
+            if (rb.linearVelocity.y >= 0.5f && !inSlope)
             {
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x,0,rb.linearVelocity.z);
             }
@@ -193,40 +271,6 @@ namespace rayzngames
 
             turnRot = Quaternion.AngleAxis(Random.Range(-10f, 10f), Vector3.up);
 
-            var p0 = transform.position;
-
-            var v = nowCheckPoint.nextCheckPoint.transform.position - transform.position;
-            v.y = 0;
-            v = v.normalized * Time.deltaTime * speed;
-
-            //進行方向をすこし揺らす
-            v = turnRot * v;
-            var p1 = p0 + v;
-
-            if (nowCheckPoint.CheckIfPassed(p0, p1))
-            {
-                //チェックポイント通過
-                nowCheckPoint = nowCheckPoint.nextCheckPoint;
-                _checkCount++;
-
-                if(nowCheckPoint == CheckPoint.StartPoint)
-                {
-                    rap++;
-
-                    if (rap > 3)
-                    {
-                        Debug.Log("ゴール！");
-                        speed = 0;
-                        enabled = false;
-                        uiManager.GoalUI.SetActive(true);
-                        return;
-                    }
-                    uiManager.UpdateRapTex(rap);
-                    Debug.Log("一周");
-                }
-                Debug.Log("通過");
-                
-            }
 
         }
 
@@ -268,11 +312,13 @@ namespace rayzngames
                     }
                 }
                 
-                if (speed <= 0)
+                if (bicycle.currentSpeed <= 0.5f)
                 {
                     bicycle.braking = false;
                     bicycle.verticalInput = BackSpeed;
                     Debug.Log(bicycle.verticalInput);
+
+                    speed -= decelerationSpeed * 5;
                 }
             }
 
@@ -293,19 +339,33 @@ namespace rayzngames
                     if (DriftTime >= 5)
                     {
                         accelePower = 8;
+                        acceleTime = 3;
+
+                        speed += increaseSpeed * 5;
                        
                     }
                     else if (DriftTime >= 3)
                     {
                         accelePower = 4;
+                        acceleTime = 2;
+
+                        speed += increaseSpeed * 3;
 
                     }
                     else if (DriftTime >= 1)
                     {
                         accelePower = 3;
+                        acceleTime = 1.5f;
+
+                       speed += increaseSpeed * 2;
                     }
 
                     rb.linearVelocity = rb.linearVelocity + (transform.forward * accelePower);
+
+                    if(speed >= maxSpeed * 0.95f)
+                    {
+                        speed = maxSpeed * 0.95f;
+                    }
 
                    isDrift = false;
 
@@ -329,11 +389,11 @@ namespace rayzngames
 
             if (speed <= maxSpeed * 0.5f)
             {
-                speed += increaseSpeed * 1.2f;
+                speed += increaseSpeed * 1.3f;
             }
-            else if (speed >= maxSpeed * 0.8f)
+            else if (speed >= maxSpeed * 0.9f)
             {
-                speed += increaseSpeed * 0.3f;
+                speed += increaseSpeed * 0.35f;
             }
             else
             {
@@ -357,7 +417,7 @@ namespace rayzngames
             {
                 if (bicycle.currentSteeringAngle >= 40)
                 {
-                    rb.AddForce((transform.right) * 50000, ForceMode.Force);
+                    rb.AddForce((transform.right) * 70000, ForceMode.Force);
                    
                 }
                 rb.AddForce((transform.right) * 20000, ForceMode.Force);
@@ -366,7 +426,7 @@ namespace rayzngames
             {
                 if(bicycle.currentSteeringAngle <= -40)
                 {
-                    rb.AddForce((transform.right) * -50000, ForceMode.Force);
+                    rb.AddForce((transform.right) * -70000, ForceMode.Force);
                     
                 }
                 rb.AddForce((transform.right) * -20000, ForceMode.Force);
@@ -378,29 +438,54 @@ namespace rayzngames
 
         public void SetRank(int rank)
         {
-            this.rank = rank + 1;
+            this.rank = rank;
+
+            if (controllingBike)
+            {
+                uiManager.SetRankText(this.rank);
+            }
+        }
 
 
+        public void InitBike()
+        {
+            rb = GetComponent<Rigidbody>();
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+            uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+            bicycle = GetComponent<BicycleVehicle>();
+            speed = 0;
+
+
+    
+            rap = 1;
+
+            DefaultMaxSteeringAngle = bicycle.maxSteeringAngle;
+            DefaultLeanAngle = bicycle.maxLeanAngle;
+
+            nowCheckPoint = CheckPoint.StartPoint;
+
+            isStartDash = false;
+
+            if(controllingBike)
+            {
+                uiManager.InitPowerSlider(maxSpeed);
+                uiManager.InitSpeedSlider(DefaultSpeedLim + 5);
+                net = GameObject.Find("NetWorkManager").GetComponent<NetWorkManager>();
+            }
+
+            gameManager.bikeControllers.Add(this);
+
+            isGoal = false;
+
+
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+         
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if(other.gameObject.tag == "goal")
-            {
-                //if (PassCheck)
-                //{
-                //    rap++;
-                //    
-                //    PassCheck = false;
-
-                //    uiManager.UpdateRapTex(rap);
-                //}
-            }
-
-            if(other.gameObject.tag == "checkPoint")
-            {
-                //PassCheck = true;
-            }
+            
         }
 
         private void OnTriggerStay(Collider other)
@@ -411,10 +496,26 @@ namespace rayzngames
 
                 if (SStime >= 3)
                 {
-                    SpeedLim = 28;
+                    SpeedLim = 25;
                     SStime = 3;
                 
                 }
+            }
+
+            if(other.gameObject.tag == "Saka")
+            {
+                inSlope = true;
+
+            }
+  
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.gameObject.tag == "Saka")
+            {
+                inSlope = false;
+
             }
         }
 

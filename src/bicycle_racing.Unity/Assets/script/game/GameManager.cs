@@ -10,32 +10,44 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    static public int StageId = 1;
+
     public bool isStart;
     float WaitTime;
     float MaxWaitTime = 3.0f;
+    bool allGoal;
 
-    List<BikeController> bikeControllers = new List<BikeController>();
+    public List<BikeController> bikeControllers = new List<BikeController>();
+
+    [SerializeField] UIManager uiManager;
+
+    public List<GameObject> StartPoints = new List<GameObject>();
+
+    NetWorkManager netWorkManager;
+
+    [SerializeField] List<GameObject> Maps = new List<GameObject>();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         isStart = false;
         WaitTime = MaxWaitTime;
-        StartCoroutine(CountDown());
+
+        foreach (GameObject map in Maps)
+        {
+            map.SetActive(false);
+        }
+
+        Maps[StageId-1].SetActive(true);
 
         CheckPoint.SetForward();
 
-        GameObject[] objs = GameObject.FindGameObjectsWithTag("Player");
+        netWorkManager = GameObject.Find("NetWorkManager").GetComponent<NetWorkManager>();
 
-        foreach (GameObject obj in objs)
-        {
-            BikeController bike = obj.GetComponent<BikeController>();
+        netWorkManager.SetPlayers();
 
-            if (bike != null)
-            {
-                bikeControllers.Add(bike);
-            }
-        }
+        netWorkManager.Ready();
 
+        StartCoroutine(CountDown());
     }
 
     // Update is called once per frame
@@ -45,18 +57,37 @@ public class GameManager : MonoBehaviour
         {
             //チェックポイント通過数が多い方が上(降順)
             //通過数が同じ場合は、進行度が大きいの方が上(降順)
+            
             var order = bikeControllers.OrderByDescending(c => c.checkCount).ThenByDescending(c => c.progress);
             int rank = 0;
 
             foreach (var car in order)
             {
-                car.SetRank(rank++);
+                rank++;
+                car.SetRank(rank);
+             
+            }
+
+            allGoal = true;
+
+            foreach (BikeController controller in bikeControllers)
+            {
+                if(!controller.isGoal)
+                {
+                    allGoal = false;
+                }
+            }
+
+            if (allGoal)
+            {
+                uiManager.GoalUI.SetActive(true);
+                Debug.Log("AllGoal");
             }
         }
 
     }
 
-    IEnumerator CountDown()
+     public IEnumerator CountDown()
     {
         while (true)
         {

@@ -17,7 +17,7 @@ namespace bicycle_racing.Shared.Interfaces.StreamingHubs
         // [クライアントから呼び出す]
 
         // ユーザー入室
-        Task<JoinedUser[]> JoinAsync(string roomName, int userId);
+        Task<JoinedUser[]> JoinAsync(int userId,int StageId);
 
         // サーバー退出
         Task LeaveAsync();
@@ -25,7 +25,14 @@ namespace bicycle_racing.Shared.Interfaces.StreamingHubs
         //ユーザーの移動
         Task MoveAsync(Vector3 pos,Quaternion rot);
 
+        Task PassCheckAsync();
+
+        Task GoalAsync(int rank);
+
+        Task ReadyAsync();
+
         Task<Guid> GetConnectionId();
+     
     }
 
 }

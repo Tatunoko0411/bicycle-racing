@@ -1,3 +1,4 @@
+using bicycle_racing.Server.StreamingHubs;
 using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var magiconion = builder.Services.AddMagicOnion();
@@ -16,6 +17,7 @@ builder.Services.AddSwaggerGen(options => {
     });
 });
 builder.Services.AddMvcCore().AddApiExplorer();
+builder.Services.AddSingleton<RoomContextRepository>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

@@ -12,10 +12,14 @@ namespace bicycle_racing.Server.StreamingHubs
         private readonly ConcurrentDictionary<string, RoomContext> contexts =
             new ConcurrentDictionary<string, RoomContext>();
 
+        public int MaxUsers = 2;
+        public int MinUsers = 2;
+
+
         // ルームコンテキストの作成
-        public RoomContext CreateContext(string roomName)
+        public RoomContext CreateContext(string roomName,int StageId)
         {
-            var context = new RoomContext(groupProvider, roomName);
+            var context = new RoomContext(groupProvider, roomName,StageId);
             contexts[roomName] = context;
             return context;
         }
@@ -36,6 +40,24 @@ namespace bicycle_racing.Server.StreamingHubs
             {
                 RoomContext?.Dispose();
             }
+        }
+
+        public RoomContext FindContext(int stageId)
+        {
+            foreach (var item in contexts)
+            {
+                if(!item.Value.isStart)
+                {
+
+                    if (item.Value.StageID == stageId)
+                    {
+                        return item.Value;
+                    }
+                }
+            }
+
+            //全ルームがスタートしていたら新規作成
+            return CreateContext(Guid.NewGuid().ToString(),stageId);
         }
     }
 }

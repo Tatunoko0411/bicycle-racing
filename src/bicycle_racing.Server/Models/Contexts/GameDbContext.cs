@@ -13,6 +13,8 @@ namespace bicycle_racing.Server.Models.Contexts
     public class GameDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Battle> Battles { get; set; }
+        public DbSet<BattleLog> Battle_Logs { get; set; }
 
         readonly string connectionString =
             "server=localhost;database=bicycle_racing;user=jobi;password=jobi;";

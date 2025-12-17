@@ -1,3 +1,4 @@
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
 public class TitleManager : MonoBehaviour
@@ -14,5 +15,10 @@ public class TitleManager : MonoBehaviour
         
     }
 
+    public void MoveMtching(int StageId)
+    {
+        GameManager.StageId = StageId;
 
+        Initiate.Fade("MatcingScene", Color.black, 1.5f);
+    }
 }

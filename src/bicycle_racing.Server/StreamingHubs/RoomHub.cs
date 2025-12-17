@@ -4,6 +4,7 @@ using bicycle_racing.Shared.Models.Entities;
 using bicycle_racing.Shared.Interfaces.StreamingHubs;
 
 using UnityEngine;
+using realtime_game.Server.Services;
 
 namespace bicycle_racing.Server.StreamingHubs
 {
@@ -11,19 +12,18 @@ namespace bicycle_racing.Server.StreamingHubs
     {
         private RoomContextRepository roomContextRepos;
         private RoomContext roomContext;
+        private BattleService battleService = new BattleService();
+        private BattleLogService battleLogService = new BattleLogService();
 
         //ルームに接続
-        public async Task<JoinedUser[]> JoinAsync(string roomName, int userId)
+        public async Task<JoinedUser[]> JoinAsync(int userId,int StageId)
         {
             // 同時に生成しないように排他制御
             lock (roomContextRepos)
             {
-                // 指定の名前のルームがあるかどうかを確認
-                this.roomContext = roomContextRepos.GetContext(roomName);
-                if (this.roomContext == null)
-                { // 無かったら生成
-                    this.roomContext = roomContextRepos.CreateContext(roomName);
-                }
+                //ルーム検索
+                this.roomContext = roomContextRepos.FindContext(StageId);
+
             }
 
             // ルームに参加 & ルームを保持
@@ -41,6 +41,20 @@ namespace bicycle_racing.Server.StreamingHubs
             // ルームコンテキストにユーザー情報を登録
             var roomUserData = new RoomUserData() { JoinedUser = joinedUser };
             this.roomContext.RoomUserDataList[ConnectionId] = roomUserData;
+
+            if(this.roomContext.RoomUserDataList.Count >= roomContextRepos.MaxUsers)
+            {
+                this.roomContext.isStart = true;
+                Console.WriteLine("参加者がいっぱいになりました");
+
+                int BattleId = await battleService.RegistBattleAsync(StageId);
+
+                this.roomContext.BattleId = BattleId;
+
+                //ゲーム開始通知
+                this.roomContext.Group.All.OnConfirmed(BattleId);
+            }
+
 
             // 自分以外のルーム参加者全員に、ユーザーの入室通知を送信
             this.roomContext.Group.Except([this.ConnectionId]).OnJoin(joinedUser);
@@ -66,6 +80,30 @@ namespace bicycle_racing.Server.StreamingHubs
         public Task<Guid> GetConnectionId()
         {
             return Task.FromResult<Guid>(this.ConnectionId);
+        }
+
+
+        public Task ReadyAsync()
+        {
+
+            //準備出来たことを自分のRoomUserDataに保存
+            var roomUserData = this.roomContext.RoomUserDataList[this.ConnectionId];
+            roomUserData.isReady = true;
+
+            //全員準備できたか判定
+            bool isReady = true;
+            var roomUserDataList = this.roomContext.RoomUserDataList.Values.ToArray();
+            foreach (var targetRoomUserData in roomUserDataList)
+            {
+                if(!targetRoomUserData.isReady)
+                {
+                    return Task.CompletedTask;
+                }
+            }
+
+            Console.WriteLine("開始します");
+            this.roomContext.Group.All.OnStart();
+            return Task.CompletedTask;
         }
 
         public Task LeaveAsync()
@@ -97,6 +135,36 @@ namespace bicycle_racing.Server.StreamingHubs
             return Task.CompletedTask;
         }
 
+        //チェックポイント通過
+        public Task PassCheckAsync()
+        { 
+            // 位置情報を記録
+            this.roomContext.RoomUserDataList[this.ConnectionId].checkCount++;
+
+            // 移動情報を自分以外の全メンバーに通知
+            this.roomContext.Group.Except([this.ConnectionId]).OnPassCheck(this.ConnectionId);
+
+            return Task.CompletedTask;
+
+        }
+
+        //ゴール
+        public async Task GoalAsync(int rank)
+        {
+            this.roomContext.RoomUserDataList[this.ConnectionId].checkCount++;
+
+            // 移動情報を自分以外の全メンバーに通知
+            this.roomContext.Group.Except([this.ConnectionId]).OnGoal(this.ConnectionId);
+
+
+            await battleLogService.RegistBattleLogAsync(roomContext.BattleId, 
+                this.roomContext.RoomUserDataList[this.ConnectionId].JoinedUser.UserData.Id,
+                rank);
+
+           
+        }
+
+        
 
     }
 

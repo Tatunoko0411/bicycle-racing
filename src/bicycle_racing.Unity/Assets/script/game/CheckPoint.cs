@@ -8,6 +8,8 @@ public class CheckPoint : MonoBehaviour
     [SerializeField]
     int index;
 
+    [SerializeField] int stageId;
+
     public Vector3 forward;
     public CheckPoint nextCheckPoint;
 
@@ -18,7 +20,10 @@ public class CheckPoint : MonoBehaviour
     //自分自身をlistにつなげていきます
     void Awake()
     {
-        list.Add(this);
+        if (GameManager.StageId == stageId)
+        {
+            list.Add(this);
+        }
     }
 
     static public void SetForward()

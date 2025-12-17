@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="434d73a1-b0d7-4a0e-aa88-9c533a0838e7" name="変更" comment="">
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Server/Models/Contexts/GameDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Server/Models/Contexts/GameDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Server/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Server/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Server/StreamingHubs/RoomContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Server/StreamingHubs/RoomContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Server/StreamingHubs/RoomContextRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Server/StreamingHubs/RoomContextRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Server/StreamingHubs/RoomHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Server/StreamingHubs/RoomHub.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Server/StreamingHubs/RoomUserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Server/StreamingHubs/RoomUserData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Shared/Interfaces/StreamingHubs/IRoomHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Shared/Interfaces/StreamingHubs/IRoomHub.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Shared/Interfaces/StreamingHubs/IRoomHubReceiver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Shared/Interfaces/StreamingHubs/IRoomHubReceiver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/RayznGames/BicycleSystem/HDRP/Prefabs/Bicycle.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/RayznGames/BicycleSystem/HDRP/Prefabs/Bicycle.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/RayznGames/BicycleSystem/Scripts/BicycleVehicle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/RayznGames/BicycleSystem/Scripts/BicycleVehicle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/Scenes/GameScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/Scenes/GameScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/Scenes/TitleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/Scenes/TitleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/Matching/MatchingManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/Matching/MatchingManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/NetWork/MagiconionModels/RoomModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/NetWork/MagiconionModels/RoomModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/NetWork/NetWorkManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/NetWork/NetWorkManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/game/BikeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/game/BikeController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/game/CheckPoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/game/CheckPoint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/game/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/game/GameManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/game/UIManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/game/UIManager.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/title/TitleManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Assets/script/title/TitleManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/ProjectSettings/ProjectSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/ProjectSettings/QualitySettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/ProjectSettings/QualitySettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Unity/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Unity/ProjectSettings/TagManager.asset" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="34pXuNsx4tfCTdsfU9SwbN0rqGN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/kousuke/puzzle-app0&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;java.sql.Driver&quot;
+    ]
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="アプリケーションレベル" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="デフォルトタスク">
+      <changelist id="434d73a1-b0d7-4a0e-aa88-9c533a0838e7" name="変更" comment="" />
+      <created>1761911709087</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761911709087</updated>
+      <workItem from="1761911710111" duration="825000" />
+      <workItem from="1762304386857" duration="1173000" />
+      <workItem from="1762305575909" duration="857000" />
+      <workItem from="1762310170251" duration="882000" />
+      <workItem from="1762992508508" duration="639000" />
+      <workItem from="1762993882584" duration="1305000" />
+      <workItem from="1764568386151" duration="2785000" />
+      <workItem from="1764914863427" duration="2143000" />
+      <workItem from="1765843579802" duration="6747000" />
+      <workItem from="1765945696370" duration="631000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

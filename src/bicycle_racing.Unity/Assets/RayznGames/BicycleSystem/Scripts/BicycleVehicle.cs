@@ -84,7 +84,7 @@ namespace rayzngames
 		[SerializeField][Range(-45, 45)] public float currentLeanAngle { get; private set; }
 
 		[Header("Speed M/s")]
-		[SerializeField] public float currentSpeed { get; private set; }
+		[SerializeField] public float currentSpeed { get;  set; }
 		protected private WheelHit frontInfo;
 		protected private WheelHit rearInfo;
 		
@@ -111,6 +111,8 @@ namespace rayzngames
 			//To stop bike from Jittering
 			frontWheel.ConfigureVehicleSubsteps(5, 12, 15);
 			rearWheel.ConfigureVehicleSubsteps(5, 12, 15);
+
+		
 		}
 
 
@@ -147,9 +149,9 @@ namespace rayzngames
 			}
 			else
 			{
-			
-				rb.constraints = RigidbodyConstraints.None;
-			}
+
+                rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+            }
 		}
 		 
 		public bool OnGround()
