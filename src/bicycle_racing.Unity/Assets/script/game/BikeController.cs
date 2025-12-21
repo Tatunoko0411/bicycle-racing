@@ -70,6 +70,8 @@ namespace rayzngames
 
         [SerializeField] NetWorkManager net;
 
+        [SerializeField] GameObject speedLine;
+
         //そのチェックポイントにおける進行度
         public float progress => nowCheckPoint.GetProgress(transform.position);
 
@@ -234,22 +236,27 @@ namespace rayzngames
                 rb.AddForce(transform.forward * (-30000f), ForceMode.Force);
 
                 uiManager.SetBikeAnimSpeed(20);
+                speedLine.SetActive(true);
             }
             else if (bicycle.currentSpeed >= SpeedLim * 0.8f)
             {
                 uiManager.SetBikeAnimSpeed(40);
+                speedLine.SetActive(true);
             }
             else if (bicycle.currentSpeed >= SpeedLim * 0.6f)
             {
                 uiManager.SetBikeAnimSpeed(50);
+                speedLine.SetActive(false);
             }
             else if (bicycle.currentSpeed >= SpeedLim * 0.4f)
             {
                 uiManager.SetBikeAnimSpeed(60);
+                speedLine.SetActive(false);
             }
             else if (bicycle.currentSpeed < SpeedLim * 0.4f)
             {
                 uiManager.SetBikeAnimSpeed(80);
+                speedLine.SetActive(false);
             }
 
             if (rb.linearVelocity.y >= 0.5f && !inSlope)
@@ -417,19 +424,22 @@ namespace rayzngames
             {
                 if (bicycle.currentSteeringAngle >= 40)
                 {
-                    rb.AddForce((transform.right) * 70000, ForceMode.Force);
-                   
+                    rb.AddForce((transform.right) * 90000, ForceMode.Force);
+                    transform.Rotate(new Vector3(0, 0.45f, 0));
                 }
-                rb.AddForce((transform.right) * 20000, ForceMode.Force);
+                rb.AddForce((transform.right) * 40000, ForceMode.Force);
+                
+               
             }
             else if (Input.GetAxis("Horizontal") <= -0.1f)
             {
                 if(bicycle.currentSteeringAngle <= -40)
                 {
-                    rb.AddForce((transform.right) * -70000, ForceMode.Force);
-                    
+                    rb.AddForce((transform.right) * -90000, ForceMode.Force);
+                    transform.Rotate(new Vector3(0, -0.45f, 0));
                 }
-                rb.AddForce((transform.right) * -20000, ForceMode.Force);
+                rb.AddForce((transform.right) * -40000, ForceMode.Force);
+                rb.angularVelocity = rb.angularVelocity +(-transform.right*0.075f);
                 
             }
 
@@ -470,7 +480,7 @@ namespace rayzngames
             {
                 uiManager.InitPowerSlider(maxSpeed);
                 uiManager.InitSpeedSlider(DefaultSpeedLim + 5);
-                net = GameObject.Find("NetWorkManager").GetComponent<NetWorkManager>();
+              net = GameObject.Find("NetWorkManager").GetComponent<NetWorkManager>();
             }
 
             gameManager.bikeControllers.Add(this);

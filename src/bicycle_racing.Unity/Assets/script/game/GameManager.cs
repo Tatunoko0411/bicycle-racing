@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
 
         netWorkManager.Ready();
 
-        StartCoroutine(CountDown());
+        //StartCoroutine(CountDown());
     }
 
     // Update is called once per frame

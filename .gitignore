@@ -473,6 +473,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# realtime_game.Admin\mysql
-src/realtime_game.Admin/mysql
-src/realtime_game.Admin/phpmyadmin
+# bicycle_racing.Admin\mysql
+src/bicycle_racing.Admin/mysql
+src/bicycle_racing.Admin/phpmyadmin
