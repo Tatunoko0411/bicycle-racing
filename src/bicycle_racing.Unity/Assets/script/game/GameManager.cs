@@ -87,6 +87,12 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void MoveTitle()
+    {
+        Initiate.Fade("TitleScene", Color.black, 1.5f);
+        netWorkManager.LeaveRoom();
+    }
+
      public IEnumerator CountDown()
     {
         while (true)

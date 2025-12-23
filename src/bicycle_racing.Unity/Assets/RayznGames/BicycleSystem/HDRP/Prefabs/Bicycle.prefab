@@ -281,6 +281,7 @@ MonoBehaviour:
   net: {fileID: 0}
   speedLine: {fileID: 2948697707571734203, guid: 016c8046f29ad0144b82b9d4cdc94ab9, type: 3}
   rogress: 0
+  assistPower: 5
 --- !u!65 &815622159736340555
 BoxCollider:
   m_ObjectHideFlags: 0

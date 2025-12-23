@@ -1,3 +1,4 @@
+using DG.Tweening;
 using rayzngames;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -77,6 +78,8 @@ namespace rayzngames
 
 
         public float rogress = 0;
+
+        public float assistPower;
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Awake()
         {
@@ -278,7 +281,7 @@ namespace rayzngames
 
             turnRot = Quaternion.AngleAxis(Random.Range(-10f, 10f), Vector3.up);
 
-
+            HandleAssist();
         }
 
 
@@ -493,6 +496,27 @@ namespace rayzngames
          
         }
 
+        void HandleAssist()
+        {
+           
+
+            var p = (transform.position-nowCheckPoint.nextCheckPoint.transform.position).normalized;
+
+            float dist = Vector3.Dot(p,nowCheckPoint.nextCheckPoint.forward);
+
+
+            Vector3 targetPos = nowCheckPoint.nextCheckPoint.transform.position + p * dist;
+
+            targetPos = new Vector3(targetPos.x, transform.position.y, targetPos.z);
+
+            this.transform.DOLookAt(targetPos, 1f);
+
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                targetPos,
+                assistPower*Time.deltaTime
+                );
+        }
         private void OnTriggerEnter(Collider other)
         {
             
