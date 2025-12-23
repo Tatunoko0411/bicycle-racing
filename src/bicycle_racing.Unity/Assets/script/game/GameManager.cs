@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 [DefaultExecutionOrder(-5)]
 
@@ -24,6 +25,9 @@ public class GameManager : MonoBehaviour
     public List<GameObject> StartPoints = new List<GameObject>();
 
     NetWorkManager netWorkManager;
+
+
+    [SerializeField] Text CountDownText;
 
     [SerializeField] List<GameObject> Maps = new List<GameObject>();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -95,17 +99,22 @@ public class GameManager : MonoBehaviour
 
      public IEnumerator CountDown()
     {
+        CountDownText.gameObject.SetActive(true);
         while (true)
         {
             Debug.Log(WaitTime);
             yield return new WaitForSeconds(1.0f);
 
             WaitTime--;
+            CountDownText.text = $"{WaitTime}";
 
             if (WaitTime <= 0)
             {
                 isStart = true;
                 Debug.Log("スタート");
+                CountDownText.text = "スタート！";
+
+                Destroy(CountDownText,1.0f);
 
                 break;
             }

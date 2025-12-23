@@ -281,7 +281,7 @@ namespace rayzngames
 
             turnRot = Quaternion.AngleAxis(Random.Range(-10f, 10f), Vector3.up);
 
-            HandleAssist();
+            //HandleAssist();
         }
 
 
@@ -509,17 +509,25 @@ namespace rayzngames
 
             targetPos = new Vector3(targetPos.x, transform.position.y, targetPos.z);
 
-            this.transform.DOLookAt(targetPos, 1f);
+           this.transform.DOLookAt(targetPos, 1f);
 
-            transform.position = Vector3.MoveTowards(
+            Vector3 movePos= Vector3.MoveTowards(
                 transform.position,
                 targetPos,
                 assistPower*Time.deltaTime
                 );
+
+            movePos -= transform.forward * assistPower * Time.deltaTime;
+            
+            transform.position = movePos;
         }
         private void OnTriggerEnter(Collider other)
         {
-            
+            if(other.gameObject.tag == "ItemBox")
+            {
+                Destroy(other.gameObject);
+                other = null;
+            }
         }
 
         private void OnTriggerStay(Collider other)
