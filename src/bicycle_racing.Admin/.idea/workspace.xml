@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="434d73a1-b0d7-4a0e-aa88-9c533a0838e7" name="変更" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/database/migrations/0001_01_01_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/database/migrations/0001_01_01_000000_create_users_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysql/#ib_16384_0.dblwr" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/#ib_16384_0.dblwr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysql/bicycle_racing/users.ibd" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/bicycle_racing/users.ibd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysql/binlog.000025" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysql/binlog.index" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/binlog.index" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysql/ib_buffer_pool" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/ib_buffer_pool" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysql/ibdata1" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/ibdata1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysql/mysql.ibd" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/mysql.ibd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysql/undo_001" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/undo_001" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysql/undo_002" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/undo_002" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bicycle_racing.Server/Models/Contexts/GameDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../bicycle_racing.Server/Models/Contexts/GameDbContext.cs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="34pXuNsx4tfCTdsfU9SwbN0rqGN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/student/Documents/git/bicycle_racing/src/bicycle_racing.Admin/app/src",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "java.sql.Driver",
+      "mysql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\student\Documents\git\bicycle_racing\src\bicycle_racing.Admin\app\src" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="アプリケーションレベル" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="デフォルトタスク">
+      <changelist id="434d73a1-b0d7-4a0e-aa88-9c533a0838e7" name="変更" comment="" />
+      <created>1761911709087</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761911709087</updated>
+      <workItem from="1761911710111" duration="825000" />
+      <workItem from="1762304386857" duration="1173000" />
+      <workItem from="1762305575909" duration="857000" />
+      <workItem from="1762310170251" duration="882000" />
+      <workItem from="1762992508508" duration="639000" />
+      <workItem from="1762993882584" duration="1305000" />
+      <workItem from="1764568386151" duration="2785000" />
+      <workItem from="1764914863427" duration="2143000" />
+      <workItem from="1765843579802" duration="6747000" />
+      <workItem from="1765945696370" duration="631000" />
+      <workItem from="1767275408041" duration="794000" />
+      <workItem from="1767357480329" duration="1612000" />
+      <workItem from="1767422989557" duration="5163000" />
+      <workItem from="1767922620643" duration="830000" />
+      <workItem from="1768220023555" duration="633000" />
+      <workItem from="1769041752487" duration="3747000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/src/database/migrations/2026_01_01_225236_friends_table.php</url>
+          <line>12</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
