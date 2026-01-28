@@ -14,6 +14,8 @@ public class ResultManager : MonoBehaviour
     [SerializeField] GameObject BikePrefab;
     int Count;
 
+    bool isLeave;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -44,6 +46,13 @@ public class ResultManager : MonoBehaviour
 
         bikeController.NameText.text = user.Name;
 
+        Vector3 direction = Camera.main.transform.position - bikeController.NameText.transform.position;
+        bikeController.NameText.transform.rotation = Quaternion.LookRotation(-direction);
+
+        bikeController.gameObject.transform.localScale =new Vector3(1.5f,1.5f,1.5f);
+
+
+
         Count++;
     }
 
@@ -56,7 +65,11 @@ public class ResultManager : MonoBehaviour
 
     public void MoveTitle()
     {
-        netWorkManager.LeaveRoom();
+        if (!isLeave)
+        {
+            isLeave =true;
+            netWorkManager.LeaveRoom();
+        }
 
         Initiate.Fade("TitleScene",Color.black,1.5f);
 

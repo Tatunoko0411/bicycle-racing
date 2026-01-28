@@ -61,6 +61,7 @@ namespace rayzngames
         float startDashPower = 10f;
 
         float SStime;
+        float SlipTime;
 
         bool inSlope;
 
@@ -142,22 +143,38 @@ namespace rayzngames
             rogress = progress;
 
             var p0 = transform.position;
+            p0.y = 0;
 
             var v = nowCheckPoint.nextCheckPoint.transform.position - transform.position;
             v.y = 0;
-            v = v.normalized * Time.deltaTime * 500;
+            v = v.normalized * Time.deltaTime * 300;
 
             //進行方向をすこし揺らす
             v = turnRot * v;
             var p1 = p0 + v;
 
-            if (nowCheckPoint.CheckIfPassed(p0, p1))
+            LogManager.SetLogText($"p0:{p0}  p1:{p1}");
+
+            //チェックポイント通過が不安定なので次のチェックポイント通過判定もする
+            if (nowCheckPoint.CheckIfPassed(p0, p1)||nowCheckPoint.nextCheckPoint.CheckIfPassed(p0, p1))
             {
                 //チェックポイント通過
-                nowCheckPoint = nowCheckPoint.nextCheckPoint;
-                checkCount++;
+               
 
-                if(controllingBike)
+                if (nowCheckPoint.nextCheckPoint.CheckIfPassed(p0, p1))
+                {
+                    nowCheckPoint = nowCheckPoint.nextCheckPoint.nextCheckPoint;
+                    checkCount += 2;
+                }
+                else
+                {
+                    nowCheckPoint = nowCheckPoint.nextCheckPoint;
+                    checkCount++;
+                }
+
+                SEManager.PlaySE(SEManager.SE.Rap);
+
+                if (controllingBike)
                 {
                    net.PassCheck();
                 }
@@ -183,13 +200,15 @@ namespace rayzngames
                         }
                         return;
                     }
-                    SEManager.PlaySE(SEManager.SE.Rap);
+                   
                     uiManager.UpdateRapTex(rap);
                     Debug.Log("一周");
                 }
                 Debug.Log("通過");
 
             }
+           
+
 
             if (!controllingBike)
             {
@@ -272,16 +291,46 @@ namespace rayzngames
 
             if ((!bicycle.braking && power >= 0))
             {
-                bicycle.verticalInput = power;
-
-                if(bicycle.currentSpeed <= SpeedLim * 0.6f && power >= maxPower*0.7f)
+                if (SlipTime <= 0)
                 {
-                    rb.linearVelocity = rb.linearVelocity + (transform.forward * 0.01f);
+                    bicycle.verticalInput = power;
+
+                    if (bicycle.currentSpeed <= SpeedLim * 0.6f && power >= maxPower * 0.7f)
+                    {
+                        rb.linearVelocity = rb.linearVelocity + (transform.forward * 0.01f);
+                    }
+                }
+                else
+                {
+                    SlipTime -= Time.deltaTime;
                 }
             }
    
+
+            ///
+            /// PC操作関係
+            ///
             bicycle.horizontalInput = joystick.Horizontal;
-         
+
+            if(Input.GetAxis("Horizontal") >= 0.1f|| Input.GetAxis("Horizontal") <= -0.1f)
+            {
+                bicycle.horizontalInput = Input.GetAxis("Horizontal");
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                BrakingInput();
+            }
+            if(Input.GetKeyUp(KeyCode.Space))
+            {
+                OffBrakingInput();
+            }
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                UseItem();
+            }
+
+
 
             if (isDrift)
             {
@@ -397,9 +446,11 @@ namespace rayzngames
                             break;
                         case Item.Big:
                             scale = Scale.Default;
+                            SpeedLim = DefaultSpeedLim;
                             break;
                         case Item.Small:
                             scale = Scale.Default;
+                            SpeedLim = DefaultSpeedLim;
                             break;
                   
                         case Item.KeepPower:
@@ -446,13 +497,14 @@ namespace rayzngames
 
                     bicycle.maxSteeringAngle = 60;
                     bicycle.maxLeanAngle = 40;
-                    bicycle.braking = false;
+                   
 
                     if (bicycle.currentSteeringAngle >= 40 || bicycle.currentSteeringAngle <= -40)
                     {
                         bicycle.turnSmoothing = 0;
                         bicycle.leanSmoothing = 0;
                         isDrift = true;
+                        bicycle.braking = false;
 
                         bicycle.rearTrail.emitting = true;
 
@@ -483,8 +535,6 @@ namespace rayzngames
 
         public void OffBrakingInput()
         {
-
-            Debug.Log("ブレーキ終わり");
             isBraking = false;
                 bicycle.braking = false;
 
@@ -554,7 +604,7 @@ namespace rayzngames
             }
             else if (power >= maxPower * 0.9f)
             {
-                power += increaseSpeed * 0.35f;
+                power += increaseSpeed * 0.45f;
             }
             else
             {
@@ -575,7 +625,7 @@ namespace rayzngames
             DriftTime += Time.deltaTime;
             bicycle.braking = false ;
 
-            if (joystick.Horizontal >= 0.1f)
+            if (bicycle.horizontalInput >= 0.1f)
             {
                 if (bicycle.currentSteeringAngle >= 40)
                 {
@@ -586,7 +636,7 @@ namespace rayzngames
                 
                
             }
-            else if (joystick.Horizontal <= -0.1f)
+            else if (bicycle.horizontalInput <= -0.1f)
             {
                 if(bicycle.currentSteeringAngle <= -40)
                 {
@@ -703,7 +753,7 @@ namespace rayzngames
                     }
                     break;
                 case Scale.Big:
-                    if (transform.localScale.x < 2f)
+                    if (transform.localScale.x < 1.5f)
                     {
                         transform.localScale += new Vector3(0.01f, 0.01f, 0.01f);
                     }
@@ -742,7 +792,8 @@ namespace rayzngames
 
         public void SpeedDown()
         {
-            rb.linearVelocity = rb.linearVelocity - (transform.forward * 0.2f);
+            rb.linearVelocity = rb.linearVelocity - (transform.forward * 2.5f);
+            SlipTime = 5f;
         }
 
        
@@ -770,12 +821,14 @@ namespace rayzngames
                 case Item.Big:
                     ItemTime = 10;
                     scale = Scale.Big;
+                    SpeedLim = 22;
                     SEManager.PlaySE(SEManager.SE.Big);
                     uiManager.SetUsingItem((int)Item.Big);
                     break;
                 case Item.Small:
                     ItemTime = 10;
                     scale = Scale.Small;
+                    SpeedLim = 25;
                     SEManager.PlaySE(SEManager.SE.Small);
                     uiManager.SetUsingItem((int)Item.Small);
                     break;
@@ -814,7 +867,7 @@ namespace rayzngames
                 if (HaveItem == Item.None && UsedItem == Item.None)
                 {
                     SEManager.PlaySE(SEManager.SE.Break);
-                    Item rnd = (Item)Random.Range(1, (int)Item.Max - 1);
+                    Item rnd = (Item)Random.Range(1, (int)Item.Max);
                     HaveItem = rnd;
 
                     Debug.Log(HaveItem);

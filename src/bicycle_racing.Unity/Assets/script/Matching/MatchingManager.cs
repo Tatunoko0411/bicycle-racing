@@ -49,6 +49,7 @@ public class MatchingManager : MonoBehaviour
                 netWorkManager.StartGame(GameManager.StageId);
                 enabled = false;
                 SetCount(-1);
+                return;
             }
 
             SetCount(30 - (int)waitTime);
@@ -74,12 +75,13 @@ public class MatchingManager : MonoBehaviour
 
     public void SetCount(int Count)
     {
-        if(Count <= -1)
+        CountText.text = Count.ToString();
+        if (Count <= -1)
         {
             CountText.text = "ƒQ[ƒ€‚ðŠJŽn‚µ‚Ü‚·";
         }
 
-        CountText.text = Count.ToString();
+
     }
 
     public void ExitMatching()

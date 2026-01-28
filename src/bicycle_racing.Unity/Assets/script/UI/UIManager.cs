@@ -40,7 +40,10 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(GoalUI.activeSelf)
+        {
+            GoalUI.transform.position = new Vector3(GoalUI.transform.position.x + 2f,GoalUI.transform.position.y,GoalUI.transform.position.z);
+        }
     }
 
     public void InitPowerSlider(float Max)
