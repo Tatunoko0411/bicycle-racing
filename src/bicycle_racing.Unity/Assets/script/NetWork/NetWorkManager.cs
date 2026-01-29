@@ -10,6 +10,7 @@ using rayzngames;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using System.IO;
+using Unity.VisualScripting;
 
 [DefaultExecutionOrder(-10)]
 
@@ -34,6 +35,8 @@ public class NetWorkManager : MonoBehaviour
 
     bool isJoin = false;
 
+    public bool isInit ;
+
     [SerializeField]BikeController bikeController;
 
 
@@ -46,7 +49,7 @@ public class NetWorkManager : MonoBehaviour
         mailModel = GetComponent<MailModel>();
 
         DontDestroyOnLoad(this);
-
+        isInit = false;
         //接続
         try
         {
@@ -71,41 +74,10 @@ public class NetWorkManager : MonoBehaviour
         roomModel.OnGoalUser += this.OnGoalUser;
         roomModel.OnMenberConfirmed += this.OnMenberConfirmed;
         roomModel.OnStartGame += this.OnStartGame;
-        
-
-        bool isSuccess = LoadUserData();
-        if (isSuccess)
-        {
-            SaveUserData();
-        }
-        else
-        {
-          myUserId = await userModel.RegistUser(Guid.NewGuid().ToString());
-   
-            if(myUserId == 0)
-            {
-                //Debug.Log("RegistUser failed");
-                return;
-            }
-            SaveUserData();
-        }
 
 
-        try
-        {
-            // ユーザー情報を取得
-            myself = await userModel.GetUser(myUserId);
 
-            LogManager.SetLogText("ネットワークの接続に成功しました。");
-            ChangeState(FriendObject.State.Online);
-        }
-        catch (Exception e)
-        {
-           // LogManager.SetLogText("RegistUser failed");
-            Debug.LogException(e);
-        }
 
-        
 
     }
 
@@ -119,6 +91,8 @@ public class NetWorkManager : MonoBehaviour
     private void FixedUpdate()
     {
 
+
+
         if (SceneManager.GetActiveScene().name == "GameScene")
         {
             if (isJoin)
@@ -131,6 +105,48 @@ public class NetWorkManager : MonoBehaviour
                     waitTime = 0;
                 }
             }
+        }
+    }
+
+    private async void Update()
+    {
+        if (roomModel.ConnectionId != Guid.Empty && !isInit)
+        {
+
+            isInit = true;
+            bool isSuccess = LoadUserData();
+            if (isSuccess)
+            {
+                SaveUserData();
+            }
+            else
+            {
+                myUserId = await userModel.RegistUser(Guid.NewGuid().ToString());
+
+                if (myUserId == 0)
+                {
+                    //Debug.Log("RegistUser failed");
+                    return;
+                }
+                SaveUserData();
+            }
+
+
+            try
+            {
+                // ユーザー情報を取得
+                myself = await userModel.GetUser(myUserId);
+
+                LogManager.SetLogText("ネットワークの接続に成功しました。");
+                ChangeState(FriendObject.State.Online);
+            }
+            catch (Exception e)
+            {
+                // LogManager.SetLogText("RegistUser failed");
+                Debug.LogException(e);
+            }
+
+
         }
     }
 

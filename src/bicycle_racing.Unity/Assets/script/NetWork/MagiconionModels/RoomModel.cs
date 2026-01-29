@@ -45,6 +45,7 @@ public class RoomModel : BaseModel, IRoomHubReceiver
     //@MagicOnionÚ‘±ˆ—
     public async UniTask ConnectAsync()
     {
+        this.ConnectionId = Guid.Empty;
         channel = GrpcChannelProvider.GetChannel();
         this.roomHub = await MagicOnion.Client.StreamingHubClient.ConnectAsync<IRoomHub, IRoomHubReceiver>(
             channel,
@@ -52,6 +53,8 @@ public class RoomModel : BaseModel, IRoomHubReceiver
             option: commonCallOptions
         );
         this.ConnectionId = await roomHub.GetConnectionId();
+
+       
     }
     //@MagicOnionØ’fˆ—
     public async UniTask DisconnectAsync()
