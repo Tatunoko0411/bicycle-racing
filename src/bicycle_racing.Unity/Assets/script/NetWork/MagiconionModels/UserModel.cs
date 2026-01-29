@@ -1,5 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using Grpc.Core;
 using MagicOnion.Client;
 using MagicOnion;
 using System;
@@ -10,20 +9,21 @@ using System.Threading.Tasks;
 using bicycle_racing.Shared.Interfaces;
 using UnityEngine;
 using bicycle_racing.Shared.Models.Entities;
+using Grpc.Net.Client;
 
 public class UserModel : BaseModel
 {
     private int userId;  //登録ユーザーID
     public async UniTask<int> RegistUserAsync(string name)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IUserService>(channel);
         try
         {  //登録成功
             userId = await client.RegistUserAsync(name);
             return userId;
         }
-        catch (RpcException e)
+        catch (Exception e)
         {  //登録失敗
             Debug.Log(e);
             return 0;
@@ -32,7 +32,7 @@ public class UserModel : BaseModel
 
     public async UnaryResult<User> UpdateUserCountAsync(int id, int play, int win)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IUserService>(channel);
         var result = await client.UpdateUserCountAsync(id,play,win);
 
@@ -41,7 +41,7 @@ public class UserModel : BaseModel
 
     public async UnaryResult<int> RegistUser(string name)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IUserService>(channel);
         var result = await client.RegistUserAsync(name);
 
@@ -50,7 +50,7 @@ public class UserModel : BaseModel
 
     public async UnaryResult<User> GetUser(int id)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IUserService>(channel);
         var result = await client.GetUserAsyncWithID(id);
 
@@ -59,7 +59,7 @@ public class UserModel : BaseModel
 
     public async UnaryResult<User> GetUser(string name)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IUserService>(channel);
         var result = await client.GetUserAsyncWithName(name);
 
@@ -68,7 +68,7 @@ public class UserModel : BaseModel
 
     public async UnaryResult<User> UpdateUser(int id, string name)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IUserService>(channel);
         var result = await client.UpdateUserAsync(id, name);
 
@@ -77,7 +77,7 @@ public class UserModel : BaseModel
 
     public async UnaryResult<int> RegistFriend(int Id1,int Id2)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IFriendService>(channel);
         var result = await client.RegistFriendAsync(Id1,Id2);
 
@@ -86,7 +86,7 @@ public class UserModel : BaseModel
 
     public async UnaryResult<Friend[]> GetFriend(int Id)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IFriendService>(channel);
         var result = await client.GetFriendAsync(Id);
 
@@ -95,7 +95,7 @@ public class UserModel : BaseModel
 
     public async UnaryResult<Task> RmoveFriend(int Id)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IFriendService>(channel);
         var result = await client.RemoveFriendAsync(Id);
 
@@ -103,7 +103,7 @@ public class UserModel : BaseModel
     }
     public async UnaryResult<User> ChangeState(int id,int State)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IUserService>(channel);
         var result = await client.ChangeStateUserAsync(id, State);
 
@@ -112,7 +112,7 @@ public class UserModel : BaseModel
 
     public async UnaryResult<User> SetRoomeName(int id,int StageId,string name)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IUserService>(channel);
         var result = await client.SetRoomNameUserAsync(id,StageId,name);
 

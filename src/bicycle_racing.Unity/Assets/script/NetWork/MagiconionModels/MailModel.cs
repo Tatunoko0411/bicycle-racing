@@ -1,5 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
-using Grpc.Core;
+using Grpc.Net.Client;
 using MagicOnion.Client;
 using MagicOnion;
 using System;
@@ -18,7 +18,7 @@ public class MailModel : BaseModel
 
     public async UniTask<int> CreateMailAsync(int SendId, int ReceiveId, int Type, string content)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IMailService>(channel);
         var result = await client.CreateMailAsync(SendId,ReceiveId,Type,content);
 
@@ -27,7 +27,7 @@ public class MailModel : BaseModel
 
     public async UniTask<Mail> ChangeStateMailAsync(int ID,int state)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IMailService>(channel);
         var result = await client.ChangeStateMailAsync(ID,state);
 
@@ -36,7 +36,7 @@ public class MailModel : BaseModel
 
     public async UniTask<Mail[]> GetMailAysnc(int playerID)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IMailService>(channel);
         var result = await client.GetMailAsync(playerID);
 
@@ -45,7 +45,7 @@ public class MailModel : BaseModel
 
     public async UniTask<bool> RemoveMailAsync(int ID)
     {
-        var channel = GrpcChannelx.ForAddress(ServerURL);
+        var channel = GrpcChannelProvider.GetChannel();
         var client = MagicOnionClient.Create<IMailService>(channel);
         var result = await client.RemoveMailAsync(ID);
 

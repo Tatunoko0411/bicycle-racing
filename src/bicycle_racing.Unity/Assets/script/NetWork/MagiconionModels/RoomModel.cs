@@ -11,10 +11,11 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using static UnityEngine.Rendering.DebugUI.Table;
+using Grpc.Net.Client;
 
 public class RoomModel : BaseModel, IRoomHubReceiver
 {
-    private GrpcChannelx channel;
+    private GrpcChannel channel;
     private IRoomHub roomHub;
 
     //Å@ê⁄ë±ID
@@ -44,9 +45,12 @@ public class RoomModel : BaseModel, IRoomHubReceiver
     //Å@MagicOnionê⁄ë±èàóù
     public async UniTask ConnectAsync()
     {
-        channel = GrpcChannelx.ForAddress(ServerURL);
-        roomHub = await StreamingHubClient.
-             ConnectAsync<IRoomHub, IRoomHubReceiver>(channel, this);
+        channel = GrpcChannelProvider.GetChannel();
+        this.roomHub = await MagicOnion.Client.StreamingHubClient.ConnectAsync<IRoomHub, IRoomHubReceiver>(
+            channel,
+            this,
+            option: commonCallOptions
+        );
         this.ConnectionId = await roomHub.GetConnectionId();
     }
     //Å@MagicOnionêÿífèàóù
