@@ -37,7 +37,7 @@ public class NetWorkManager : MonoBehaviour
 
     public bool isInit ;
 
-    [SerializeField]BikeController bikeController;
+    [SerializeField]public BikeController bikeController;
 
 
     public async void Awake()
@@ -59,6 +59,9 @@ public class NetWorkManager : MonoBehaviour
         {
             LogManager.SetLogText(e.Message);
         }
+
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
     }
 
     async void Start()
@@ -121,6 +124,7 @@ public class NetWorkManager : MonoBehaviour
             }
             else
             {
+                LogManager.SetLogText("新規作成中");
                 myUserId = await userModel.RegistUser(Guid.NewGuid().ToString());
 
                 if (myUserId == 0)
@@ -236,7 +240,7 @@ public class NetWorkManager : MonoBehaviour
             //プレイヤー配置
             foreach (JoinedUser joinedUser in roomModel.userTable.Values)
             {
-
+                cnt++;
                 // すでに表示済みのユーザーは追加しない
                 if (characterList.ContainsKey(joinedUser.ConnectionId))
                 {
@@ -252,6 +256,7 @@ public class NetWorkManager : MonoBehaviour
                     bikeController.gameManager.transform.rotation = new Quaternion(0,-90,0,0);
                     bikeController.NameText.text = joinedUser.UserData.Name;
                     isJoin = true;
+                    cnt++;
 
                 }
                 else
@@ -262,14 +267,16 @@ public class NetWorkManager : MonoBehaviour
                     characterObject.transform.rotation =  new Quaternion(0, -90, 0, 0);
                     BikeController bike = characterObject.GetComponent<BikeController>();
                     bike.NameText.text = joinedUser.UserData.Name;
+                    bike.enabled = true;
+                    bike.controllingBike = false;
 
 
-                 
+
 
                     characterList[joinedUser.ConnectionId] = characterObject;//フィールドで保持
                 }
 
-                cnt++;
+               
             }
         }
     }
@@ -476,11 +483,16 @@ public class NetWorkManager : MonoBehaviour
         {
             putItem = bike.BedPrefab;
         }
+        else
+        {
+            bike.UseItem(ItemType);
+            return;
+        }
 
         Vector3 PutPos = new Vector3(pos.x, pos.y - 0.5f, pos.z);
         //Instantiate(gameManager.Items[ItemType - 1],
          Instantiate(putItem,
-           PutPos - (bike.transform.forward * 2f),
+           PutPos - (bike.transform.forward * 4f),
             Quaternion.identity);
     }
 

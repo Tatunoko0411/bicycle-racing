@@ -103,6 +103,10 @@ namespace rayzngames
 
         [SerializeField] public Text NameText;
 
+        [SerializeField] GameObject CarObj;
+        [SerializeField] GameObject ElectroObj;
+
+
 
        public enum Scale
         {
@@ -137,6 +141,63 @@ namespace rayzngames
         // Update is called once per frame
         void Update()
         {
+
+
+            if ((ItemTime > 0))
+            {
+                ItemTime -= Time.deltaTime;
+                if (controllingBike)
+                {
+                    uiManager.UpdateUsingItem((5 - ItemTime) / 5);
+                }
+            }
+            else
+            {
+                if (UsedItem != Item.None)
+                {
+                    ItemTime = 0;
+
+                    switch (UsedItem)
+                    {
+                        case Item.Assist:
+                            isAssist = false;
+                            CarObj.SetActive(false);
+                            break;
+                        case Item.Big:
+                            scale = Scale.Default;
+                            SpeedLim = DefaultSpeedLim;
+                            break;
+                        case Item.Small:
+                            scale = Scale.Default;
+                            SpeedLim = DefaultSpeedLim;
+                            break;
+
+                        case Item.KeepPower:
+                            isKeepPower = false;
+                            ElectroObj.SetActive(false);
+                            break;
+
+                    }
+
+                    UsedItem = Item.None;
+                    if (controllingBike)
+                    {
+                        uiManager.UsingItemUI.SetActive(false);
+                    }
+
+                }
+            }
+
+
+            if (!controllingBike)
+            {
+                return;
+            }
+
+            ///
+            /// 以下は自プレイヤーのみの処理
+            ///
+
             Vector3 direction = Camera.main.transform.position - NameText.transform.position;
             NameText.transform.rotation = Quaternion.LookRotation(-direction);
 
@@ -147,19 +208,19 @@ namespace rayzngames
 
             var v = nowCheckPoint.nextCheckPoint.transform.position - transform.position;
             v.y = 0;
-            v = v.normalized * Time.deltaTime * 300;
+            v = v.normalized * Time.deltaTime * 800;
 
             //進行方向をすこし揺らす
             v = turnRot * v;
             var p1 = p0 + v;
 
-            LogManager.SetLogText($"p0:{p0}  p1:{p1}");
+
 
             //チェックポイント通過が不安定なので次のチェックポイント通過判定もする
             if (nowCheckPoint.CheckIfPassed(p0, p1)||nowCheckPoint.nextCheckPoint.CheckIfPassed(p0, p1))
             {
                 //チェックポイント通過
-               
+  
 
                 if (nowCheckPoint.nextCheckPoint.CheckIfPassed(p0, p1))
                 {
@@ -172,15 +233,16 @@ namespace rayzngames
                     checkCount++;
                 }
 
-                SEManager.PlaySE(SEManager.SE.Rap);
 
                 if (controllingBike)
                 {
-                   net.PassCheck();
+                    net.PassCheck();
                 }
 
                 if (nowCheckPoint == CheckPoint.StartPoint)
                 {
+
+                    SEManager.PlaySE(SEManager.SE.Rap);
                     rap++;
 
                     if (rap > 3)
@@ -195,6 +257,7 @@ namespace rayzngames
                             net.Goal(rank);
 
                             StartCoroutine(gameManager.MoveResult());
+
                             net.GoalPlayerList[net.roomModel.ConnectionId] = net.myself;
                             SEManager.PlaySE(SEManager.SE.Goal);
                         }
@@ -207,14 +270,8 @@ namespace rayzngames
                 Debug.Log("通過");
 
             }
-           
 
-
-            if (!controllingBike)
-            {
-                return;
-            }
-            //TODO:漕ぎすぎデバフ
+       
 
             //スタート前からパワーを貯めれるようにしたいのでパワー関係を上に配置
             if (Input.GetKeyDown(KeyCode.Return) && downTime <= 0)
@@ -427,43 +484,6 @@ namespace rayzngames
                     }
                 }
             }
-
-            if ((ItemTime > 0))
-            {
-                ItemTime -= Time.deltaTime;
-                uiManager.UpdateUsingItem((5-ItemTime)/5);
-            }
-            else
-            {
-                if (UsedItem != Item.None)
-                {
-                    ItemTime = 0;
-
-                    switch (UsedItem)
-                    {
-                        case Item.Assist:
-                            isAssist = false;
-                            break;
-                        case Item.Big:
-                            scale = Scale.Default;
-                            SpeedLim = DefaultSpeedLim;
-                            break;
-                        case Item.Small:
-                            scale = Scale.Default;
-                            SpeedLim = DefaultSpeedLim;
-                            break;
-                  
-                        case Item.KeepPower:
-                            isKeepPower = false;
-                            break;
-
-                    }
-
-                    UsedItem = Item.None;
-                    uiManager.UsingItemUI.SetActive(false);
-
-                }
-            }
             
             if(isBraking)
             {
@@ -474,7 +494,9 @@ namespace rayzngames
 
 
 
-        //ブレーキ操作
+        /// <summary>
+        /// ブレーキ操作（実行時）
+        /// </summary>
         public void BrakingInput()
         {
        
@@ -486,6 +508,9 @@ namespace rayzngames
 
         }
 
+        /// <summary>
+        /// ブレーキ操作（入力時）
+        /// </summary>
         public void Braking()
         {
 
@@ -533,6 +558,9 @@ namespace rayzngames
             }
         }
 
+        /// <summary>
+        /// ブレーキ操作（終了時）
+        /// </summary>
         public void OffBrakingInput()
         {
             isBraking = false;
@@ -590,7 +618,9 @@ namespace rayzngames
             
         }
 
-        //自転車の加速
+        /// <summary>
+        /// 自転車の加速
+        /// </summary>
         public void Riding()
         {
             if(bicycle.braking || downTime > 0)
@@ -619,7 +649,9 @@ namespace rayzngames
             
         }
 
-        //ドリフト操作
+        /// <summary>
+        /// ドリフト操作
+        /// </summary>
         public void Drift()
         {
             DriftTime += Time.deltaTime;
@@ -630,7 +662,7 @@ namespace rayzngames
                 if (bicycle.currentSteeringAngle >= 40)
                 {
                     rb.AddForce((transform.right) * 90000, ForceMode.Force);
-                    transform.Rotate(new Vector3(0, 0.45f, 0));
+                    transform.Rotate(new Vector3(0, 0.25f, 0));
                 }
                 rb.AddForce((transform.right) * 40000, ForceMode.Force);
                 
@@ -641,7 +673,7 @@ namespace rayzngames
                 if(bicycle.currentSteeringAngle <= -40)
                 {
                     rb.AddForce((transform.right) * -90000, ForceMode.Force);
-                    transform.Rotate(new Vector3(0, -0.45f, 0));
+                    transform.Rotate(new Vector3(0, -0.25f, 0));
                 }
                 rb.AddForce((transform.right) * -40000, ForceMode.Force);
                 rb.angularVelocity = rb.angularVelocity +(-transform.right*0.075f);
@@ -651,6 +683,10 @@ namespace rayzngames
             rb.AddForce((transform.forward) * power * 20, ForceMode.Force);
         }
 
+        /// <summary>
+        /// ランキング設定
+        /// </summary>
+        /// <param name="rank">プレイヤーのランキング</param>
         public void SetRank(int rank)
         {
             this.rank = rank;
@@ -661,7 +697,9 @@ namespace rayzngames
             }
         }
 
-
+        /// <summary>
+        /// 自転車の初期化
+        /// </summary>
         public void InitBike()
         {
             rb = GetComponent<Rigidbody>();
@@ -698,6 +736,10 @@ namespace rayzngames
                 uiManager.InitPowerSlider(maxPower);
                 uiManager.InitSpeedSlider(DefaultSpeedLim + 5);
               net = GameObject.Find("NetWorkManager").GetComponent<NetWorkManager>();
+
+                net.bikeController = this;
+
+                NameText.text = net.myself.Name;
             }
 
             gameManager.bikeControllers.Add(this);
@@ -712,6 +754,9 @@ namespace rayzngames
          
         }
 
+        /// <summary>
+        /// ハンドルアシスト操作
+        /// </summary>
         void HandleAssist()
         {
            
@@ -736,30 +781,34 @@ namespace rayzngames
             movePos -= transform.forward * assistPower * Time.deltaTime;
             
             transform.position = movePos;
+            CarObj.transform.rotation = new Quaternion(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z,-transform.rotation.w);
         }
 
+        /// <summary>
+        /// 大きさの変更
+        /// </summary>
         public void ChengeScale()
         {
             switch (scale)
             {
                 case Scale.Default:
-                    if (transform.localScale.x > 0.75f)
+                    if (transform.localScale.z > 0.75f)
                     {
                         transform.localScale -= new Vector3(0.01f, 0.01f, 0.01f);
                     }
-                    else if (transform.localScale.x < 0.75f)
+                    else if (transform.localScale.z < 0.75f)
                     {
                         transform.localScale += new Vector3(0.01f, 0.01f, 0.01f);
                     }
                     break;
                 case Scale.Big:
-                    if (transform.localScale.x < 1.5f)
+                    if (transform.localScale.z < 1.5f)
                     {
                         transform.localScale += new Vector3(0.01f, 0.01f, 0.01f);
                     }
                     break;
                 case Scale.Small:
-                    if (transform.localScale.x > 0.3f)
+                    if (transform.localScale.z > 0.3f)
                     {
                         transform.localScale -= new Vector3(0.01f, 0.01f, 0.01f);
                     }
@@ -771,43 +820,26 @@ namespace rayzngames
 
         }
 
-        public void  TestBigScale()
-        {
-            scale = Scale.Big;
-        }
-
-        public void TestSmallScale() { scale = Scale.Small; }
-         
-        public void TestDefaultScale() {  scale = Scale.Default; }
-
-        public void ChengeScaleType(Scale scale)
-        {
-            this.scale = scale;
-        }
-
+        /// <summary>
+        /// パワーダウン
+        /// </summary>
         public void PowerDown()
         {
             power -= maxPower * 0.3f;
         }
 
+        /// <summary>
+        /// スピードダウン
+        /// </summary>
         public void SpeedDown()
         {
             rb.linearVelocity = rb.linearVelocity - (transform.forward * 2.5f);
             SlipTime = 5f;
         }
 
-       
-
-        public void PutItem(Vector3 pos ,int ItemType)
-        {
-            Vector3 PutPos = new Vector3(pos.x, transform.position.y - 0.5f,transform.position.z);
-            Instantiate(BananaPrefab,
-               PutPos - (transform.forward * 2f),
-                Quaternion.identity);
-
-            SEManager.PlaySE(SEManager.SE.put);
-        }
-
+        /// <summary>
+        /// アイテム使用
+        /// </summary>
         public void UseItem()
         {
            
@@ -817,6 +849,8 @@ namespace rayzngames
                     ItemTime = 10;
                     isAssist = true;
                     uiManager.SetUsingItem((int)Item.Assist);
+                    CarObj.SetActive(true);
+                    net.PutItem();
                     break;
                 case Item.Big:
                     ItemTime = 10;
@@ -846,6 +880,8 @@ namespace rayzngames
                     ItemTime = 10;
                     isKeepPower = true;
                     uiManager.SetUsingItem((int)Item.KeepPower);
+                    ElectroObj.SetActive(true);
+                    net.PutItem();
                     break;
                     case Item.None:
                     return;
@@ -859,22 +895,58 @@ namespace rayzngames
             HaveItem = Item.None;
             uiManager.ChengeItemSprite((int)HaveItem);
         }
-        private void OnTriggerEnter(Collider other)
+
+        /// <summary>
+        /// アイテム使用（タイプ指定）
+        /// </summary>
+        /// <param name="Type">使用するアイテムの種類</param>
+        public void UseItem(int Type)
+        {
+            switch (Type)
+            {
+                case (int)Item.Assist:
+                    ItemTime = 10;
+                    isAssist = true;
+                  
+                    CarObj.SetActive(true);
+                    break;
+               
+                case (int)Item.KeepPower:
+                    ItemTime = 10;
+                    isKeepPower = true;
+                    
+                    ElectroObj.SetActive(true);
+                    break;
+                case (int)Item.None:
+                    return;
+
+
+
+
+            }
+
+            UsedItem = (Item)Type;
+        }
+            private void OnTriggerEnter(Collider other)
         {
             if(other.gameObject.tag == "ItemBox")
             {
+
                 Destroy(other.gameObject);
-                if (HaveItem == Item.None && UsedItem == Item.None)
+                if (controllingBike)
                 {
-                    SEManager.PlaySE(SEManager.SE.Break);
-                    Item rnd = (Item)Random.Range(1, (int)Item.Max);
-                    HaveItem = rnd;
+                    if (HaveItem == Item.None && UsedItem == Item.None)
+                    {
+                        SEManager.PlaySE(SEManager.SE.Break);
+                        Item rnd = (Item)Random.Range(1, (int)Item.Max);
+                        HaveItem = rnd;
 
-                    Debug.Log(HaveItem);
+                        Debug.Log(HaveItem);
 
 
-                    //所持アイテムの画像差し替え、インデックスは　HaveItem　で引き出す
-                    uiManager.ChengeItemSprite((int)HaveItem);
+                        //所持アイテムの画像差し替え、インデックスは　HaveItem　で引き出す
+                        uiManager.ChengeItemSprite((int)HaveItem);
+                    }
                 }
             }
 

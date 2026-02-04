@@ -57,6 +57,8 @@ public class TitleManager : MonoBehaviour
 
     [SerializeField] GameObject panel;
 
+    bool isChengeState;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -64,7 +66,10 @@ public class TitleManager : MonoBehaviour
 
 
         StartObject.SetActive(true);
-       
+
+        isChengeState = false;
+
+
     }
 
     // Update is called once per frame
@@ -74,9 +79,13 @@ public class TitleManager : MonoBehaviour
         {
             if (netWorkManager.myself != null)
             {
-                if (netWorkManager.myself.State != (int)FriendObject.State.Online)
+                if (!isChengeState)
                 {
-                    netWorkManager.ChangeState(FriendObject.State.Online);
+                    if (netWorkManager.myself.State != (int)FriendObject.State.Online)
+                    {
+                        netWorkManager.ChangeState(FriendObject.State.Online);
+                        isChengeState=true;
+                    }
                 }
             }
         }

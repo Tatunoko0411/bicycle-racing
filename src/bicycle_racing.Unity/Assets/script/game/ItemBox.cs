@@ -11,6 +11,7 @@ public class ItemBox : MonoBehaviour
     void Start()
     {
         isSetBoj = false;
+
     }
 
     // Update is called once per frame
@@ -29,6 +30,11 @@ public class ItemBox : MonoBehaviour
         
     }
 
+
+    /// <summary>
+    /// アイテムボックス設置
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator SetItemBox()
     {
         yield return new WaitForSeconds(3);

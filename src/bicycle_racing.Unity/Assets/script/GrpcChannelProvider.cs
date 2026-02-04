@@ -5,7 +5,7 @@ public static class GrpcChannelProvider
 {
     private static GrpcChannel _channel;
 #if DEBUG
-   // private const string ServerURL = "http://localhost:5244";
+   //private const string ServerURL = "https://localhost:7180";
     private const string ServerURL = "https://ge202400.japaneast.cloudapp.azure.com";
 # else
     private const string ServerURL = "https://ge202400.japaneast.cloudapp.azure.com";
@@ -17,7 +17,7 @@ public static class GrpcChannelProvider
         var handler = new YetAnotherHttpHandler
         {
             Http2Only = true,                 // Åö ïKê{
-            //SkipCertificateVerification = true // äJî≠éûÇÃÇ›
+            SkipCertificateVerification = true // äJî≠éûÇÃÇ›
         };
         _channel = GrpcChannel.ForAddress(
             ServerURL,

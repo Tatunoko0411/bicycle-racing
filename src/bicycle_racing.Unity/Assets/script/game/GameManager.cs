@@ -101,19 +101,28 @@ public class GameManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// リザルト遷移
+    /// </summary>
     public IEnumerator MoveResult()
     {
-        yield return new WaitForSeconds(5);
-
+        yield return new WaitForSeconds(3);
         Initiate.Fade("ResultScene", Color.black, 1.5f);
     }
 
+    /// <summary>
+    /// タイトル遷移
+    /// </summary>
     public void MoveTitle()
     {
         Initiate.Fade("TitleScene", Color.black, 1.5f);
         netWorkManager.LeaveRoom();
     }
 
+    /// <summary>
+    /// スタート時のカウントダウン
+    /// </summary>
+    /// <returns></returns>
      public IEnumerator CountDown()
     {
         CountDownText.gameObject.SetActive(true);

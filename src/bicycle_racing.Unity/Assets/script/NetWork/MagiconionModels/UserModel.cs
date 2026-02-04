@@ -10,6 +10,8 @@ using bicycle_racing.Shared.Interfaces;
 using UnityEngine;
 using bicycle_racing.Shared.Models.Entities;
 using Grpc.Net.Client;
+using Grpc.Core;
+using Grpc.Core.Interceptors;
 
 public class UserModel : BaseModel
 {
@@ -17,7 +19,8 @@ public class UserModel : BaseModel
     public async UniTask<int> RegistUserAsync(string name)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IUserService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IUserService>(invoker);
         try
         {  //登録成功
             userId = await client.RegistUserAsync(name);
@@ -33,7 +36,8 @@ public class UserModel : BaseModel
     public async UnaryResult<User> UpdateUserCountAsync(int id, int play, int win)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IUserService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IUserService>(invoker);
         var result = await client.UpdateUserCountAsync(id,play,win);
 
         return result;
@@ -42,17 +46,32 @@ public class UserModel : BaseModel
     public async UnaryResult<int> RegistUser(string name)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IUserService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IUserService>(invoker);
         var result = await client.RegistUserAsync(name);
 
+        LogManager.SetLogText(result.ToString());
         return result;
     }
 
     public async UnaryResult<User> GetUser(int id)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IUserService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IUserService>(invoker);
         var result = await client.GetUserAsyncWithID(id);
+
+        //try
+        //{
+        //    return await client.GetUserAsyncWithID(id);
+
+        //}
+        //catch (Exception e)
+        //{
+        //    throw new RpcException(
+        //        new Status(StatusCode.Internal, e.Message)
+        //    );
+        //}
 
         return result;
     }
@@ -60,7 +79,8 @@ public class UserModel : BaseModel
     public async UnaryResult<User> GetUser(string name)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IUserService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IUserService>(invoker);
         var result = await client.GetUserAsyncWithName(name);
 
         return result;
@@ -69,7 +89,8 @@ public class UserModel : BaseModel
     public async UnaryResult<User> UpdateUser(int id, string name)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IUserService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IUserService>(invoker);
         var result = await client.UpdateUserAsync(id, name);
 
         return result;
@@ -78,7 +99,8 @@ public class UserModel : BaseModel
     public async UnaryResult<int> RegistFriend(int Id1,int Id2)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IFriendService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IFriendService>(invoker);
         var result = await client.RegistFriendAsync(Id1,Id2);
 
         return result;
@@ -87,7 +109,8 @@ public class UserModel : BaseModel
     public async UnaryResult<Friend[]> GetFriend(int Id)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IFriendService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IFriendService>(invoker);
         var result = await client.GetFriendAsync(Id);
 
         return result;
@@ -96,7 +119,8 @@ public class UserModel : BaseModel
     public async UnaryResult<Task> RmoveFriend(int Id)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IFriendService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IFriendService>(invoker);
         var result = await client.RemoveFriendAsync(Id);
 
         return result;
@@ -104,7 +128,8 @@ public class UserModel : BaseModel
     public async UnaryResult<User> ChangeState(int id,int State)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IUserService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IUserService>(invoker);
         var result = await client.ChangeStateUserAsync(id, State);
 
         return result;
@@ -113,7 +138,8 @@ public class UserModel : BaseModel
     public async UnaryResult<User> SetRoomeName(int id,int StageId,string name)
     {
         var channel = GrpcChannelProvider.GetChannel();
-        var client = MagicOnionClient.Create<IUserService>(channel);
+        var invoker = channel.Intercept(new GameIdInterceptor("ge202402"));
+        var client = MagicOnionClient.Create<IUserService>(invoker);
         var result = await client.SetRoomNameUserAsync(id,StageId,name);
 
         return result;
