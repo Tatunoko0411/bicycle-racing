@@ -26,20 +26,12 @@ public class UserObject : MonoBehaviour
 
     NetWorkManager netWorkManager;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
 
 
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    /// <summary>
+    /// ユーザ情報設定
+    /// </summary>
+    /// <param name="UserId">ユーザID</param>
     public async void SetUser(int UserId)
     {
         netWorkManager = GameObject.Find("NetWorkManager").GetComponent<NetWorkManager>();
@@ -81,7 +73,9 @@ public class UserObject : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    ///　フレンドリクエスト送信
+    /// </summary>
     public async void SendRequest()
     {
         netWorkManager.SendMail(userDate.Id, (int)MailObject.MailType.FriendRequest,
@@ -90,6 +84,10 @@ public class UserObject : MonoBehaviour
        
     }
 
+
+    /// <summary>
+    /// フレンドリクエストボタンの設定
+    /// </summary>
     public void SetEvent()
     {
         eventTrigger = Button.gameObject.GetComponent<EventTrigger>();

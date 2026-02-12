@@ -11167,7 +11167,6 @@ MonoBehaviour:
   bikeAnimController: {fileID: 1903264416}
   ItemspriteList:
   - {fileID: 21300000, guid: 1a991c10bc688404ba85ece6ee5963ba, type: 3}
-  - {fileID: 21300000, guid: 3ea459de0ec6d4f4b925051faf1debb0, type: 3}
   - {fileID: 21300000, guid: 05f132ee580904549ae694f39b6738c6, type: 3}
   - {fileID: 21300000, guid: 379526e03f1fe2c478271621672d03b5, type: 3}
   - {fileID: 21300000, guid: 5f3df9a08fd716d4493089181ee8ac0c, type: 3}
@@ -23302,7 +23301,6 @@ GameObject:
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
-  - component: {fileID: 330585549}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -23377,8 +23375,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.12543169, y: -0.000038729606, z: 0.000004896592, w: 0.99210227}
-  m_LocalPosition: {x: -2.399983, y: 7.2242928, z: -43.276485}
+  m_LocalRotation: {x: 0.04358223, y: -0.7264883, z: 0.046273723, w: 0.6842325}
+  m_LocalPosition: {x: 7.1380367, y: 5.2489147, z: -30.312069}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -23460,21 +23458,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
---- !u!114 &330585549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4df9b5842a3400e4f9144323ec62906e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offSet: {x: 10, y: 0, z: 0}
-  target: {fileID: 1116438470}
-  distance: 10
 --- !u!1001 &330820804
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39134,8 +39117,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 540426861}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.12543169, y: -0.000038729606, z: 0.000004896592, w: 0.99210227}
-  m_LocalPosition: {x: -2.3999462, y: 7.2243013, z: -43.27648}
+  m_LocalRotation: {x: 0.04358223, y: -0.7264883, z: 0.046273723, w: 0.6842325}
+  m_LocalPosition: {x: 7.1380253, y: 5.24901, z: -30.31207}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -39153,7 +39136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8b78ac948f05a46a6d8339a503172b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LookAtOffset: {x: 2, y: 1, z: 0}
+  LookAtOffset: {x: 0, y: 1.56, z: -0.4}
 --- !u!114 &540426865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39166,7 +39149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 886251e9a18ece04ea8e61686c173e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraDistance: 3
+  CameraDistance: 4
   DeadZoneDepth: 0
   Composition:
     ScreenPosition: {x: -0, y: -0.02}
@@ -39178,8 +39161,8 @@ MonoBehaviour:
       Size: {x: 0.8, y: 0.8}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
-  TargetOffset: {x: -9.5, y: 4, z: 0}
-  Damping: {x: 3.56, y: 2, z: 0}
+  TargetOffset: {x: 0.31, y: 2.28, z: -5.57}
+  Damping: {x: 4.78, y: 2, z: 0}
   Lookahead:
     Enabled: 0
     Time: 0
@@ -81461,11 +81444,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 4c3178e7d9864a349a71f8e4bc19a179, type: 3}
---- !u!4 &1116438470 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7905099910251629089, guid: d63285bd38e721075a79a85f1a502a92, type: 3}
-  m_PrefabInstance: {fileID: 1211766058}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1117345558
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -88503,6 +88481,10 @@ PrefabInstance:
     - target: {fileID: 185195118082433056, guid: d63285bd38e721075a79a85f1a502a92, type: 3}
       propertyPath: m_Name
       value: Bicycle
+      objectReference: {fileID: 0}
+    - target: {fileID: 649770509822304886, guid: d63285bd38e721075a79a85f1a502a92, type: 3}
+      propertyPath: rearBrakePower
+      value: 0.76
       objectReference: {fileID: 0}
     - target: {fileID: 649770509822304886, guid: d63285bd38e721075a79a85f1a502a92, type: 3}
       propertyPath: frontBrakePower

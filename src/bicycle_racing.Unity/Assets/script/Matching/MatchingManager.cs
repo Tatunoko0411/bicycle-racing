@@ -41,6 +41,10 @@ public class MatchingManager : MonoBehaviour
         { 
             StartButton.gameObject.SetActive(true);
         }
+        else
+        {
+            StartButton.gameObject.SetActive(false);
+        }
     
 
         if (!CountText.gameObject.activeSelf)

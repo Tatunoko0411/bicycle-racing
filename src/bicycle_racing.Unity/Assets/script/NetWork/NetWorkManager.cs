@@ -155,7 +155,10 @@ public class NetWorkManager : MonoBehaviour
     }
 
 
-    // ユーザー情報を読み込む
+    /// <summary>
+    /// ユーザー情報を読み込む
+    /// </summary>
+    /// <returns></returns>
     public bool LoadUserData()
     {
         if (!File.Exists(Application.persistentDataPath + "/saveData.json"))
@@ -172,6 +175,9 @@ public class NetWorkManager : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// ユーザ情報のセーブ
+    /// </summary>
     public void SaveUserData()
     {
         SaveData saveData = new SaveData();
@@ -187,24 +193,43 @@ public class NetWorkManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// ユーザ情報取得
+    /// </summary>
+    /// <param name="name">取得したいユーザ名</param>
+    /// <returns></returns>
     public async Task<User> GetUser(string name)
     {
        return await userModel.GetUser(name);
     }
 
+    /// <summary>
+    /// フレンド登録
+    /// </summary>
+    /// <param name="ID">相手のユーザーID</param>
     public async void RegistFriend(int ID)
     {
         await userModel.RegistFriend(myUserId,ID);
     }
 
+    /// <summary>
+    /// 名前の更新
+    /// </summary>
+    /// <param name="name"></param>
     public async void UpdateName(string name)
     {
         await userModel.UpdateUser(myUserId,name);
     }
 
-    public async Task<User> UpdateUserCount(int play,int win)
+    /// <summary>
+    /// ユーザーの対戦履歴更新
+    /// </summary>
+    /// <param name="play">プレイ回数</param>
+    /// <param name="win">勝利回数</param>
+    /// <returns></returns>
+    public async void UpdateUserCount(int play,int win)
     {
-       return await userModel.UpdateUserCountAsync(myUserId,play,win);
+       myself = await userModel.UpdateUserCountAsync(myUserId,play,win);
     }
 
     public async void JoinRoom(int StageId)

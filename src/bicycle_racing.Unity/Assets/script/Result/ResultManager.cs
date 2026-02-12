@@ -36,6 +36,10 @@ public class ResultManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// プレイヤーの配置
+    /// </summary>
+    /// <param name="user">ユーザ情報</param>
     public void SetPlayer(User user)
     {
         GameObject obj = Instantiate(BikePrefab,
@@ -56,6 +60,9 @@ public class ResultManager : MonoBehaviour
         Count++;
     }
 
+    /// <summary>
+    /// マッチング遷移
+    /// </summary>
     public void Retry()
     {
         netWorkManager.LeaveRoom();
@@ -63,6 +70,9 @@ public class ResultManager : MonoBehaviour
         Initiate.Fade("MatcingManager",Color.black,1.5f);
     }
 
+    /// <summary>
+    /// タイトル遷移
+    /// </summary>
     public void MoveTitle()
     {
         if (!isLeave)

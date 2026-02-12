@@ -26,30 +26,21 @@ public class FriendObject : MonoBehaviour
 
     NetWorkManager netWorkManager;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    /// <summary>
+    /// フレンド情報の配置
+    /// </summary>
+    /// <param name="FrirendID">フレンドのユーザID</param>
     public async void SetFriend(int FrirendID)
     {
         netWorkManager = GameObject.Find("NetWorkManager").GetComponent<NetWorkManager>();
 
+        //フレンドのユーザ情報取得
         string name = await netWorkManager.GetUserName(FrirendID);
         friendDate = await netWorkManager.GetUser(name);
 
         state = (State)friendDate.State;
 
-        
+        //マッチング中じゃない場合はボタン非表示
         if (state == State.Matching)
         {
             Button.gameObject.SetActive(true);
@@ -82,6 +73,9 @@ public class FriendObject : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// フレンドのマッチに合流
+    /// </summary>
     public async void FriendMatch()
     {
        netWorkManager.SetRoom(friendDate.Stage_id,friendDate.Room_name);
@@ -89,6 +83,10 @@ public class FriendObject : MonoBehaviour
         Initiate.Fade("MatcingScene", Color.black,1.5f);
     }
 
+
+    /// <summary>
+    /// 合流ボタンのイベント設定
+    /// </summary>
     public void SetEvent()
     {
         eventTrigger = Button.gameObject.GetComponent<EventTrigger>();

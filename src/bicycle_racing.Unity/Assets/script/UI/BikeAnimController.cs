@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// スピードゲージ上のアニメーション処理
+/// </summary>
+
 public class BikeAnimController : MonoBehaviour
 {
 

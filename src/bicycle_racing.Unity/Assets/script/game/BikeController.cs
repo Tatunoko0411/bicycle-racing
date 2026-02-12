@@ -12,9 +12,7 @@ namespace rayzngames
 {
     public class BikeController : MonoBehaviour
     {
-        //TODO
-        //・対戦履歴作る
-        //・リザルト後の遷移類をちゃんとやる（順位表示とかも）
+
 
         public DynamicJoystick joystick;
 
@@ -50,8 +48,6 @@ namespace rayzngames
         float DriftSeconds;
         float DriftPower;
         bool isAccele;
-        float DefaultBrakeForce = 150;
-        float DriftBrakeForce = 75;
         float DriftTime;
 
         float accelePower;
@@ -66,8 +62,6 @@ namespace rayzngames
         bool inSlope;
 
         bool isKeepPower;
-
-        bool isAssist;
 
         float ItemTime;
 
@@ -87,6 +81,7 @@ namespace rayzngames
 
         [SerializeField]public GameObject BananaPrefab;
         [SerializeField]public GameObject BedPrefab;
+
         //そのチェックポイントにおける進行度
         public float progress => nowCheckPoint.GetProgress(transform.position);
 
@@ -118,7 +113,6 @@ namespace rayzngames
         public enum Item
         {
             None = 0,
-            Assist,
             Big,
             Small,
             PowerDown,
@@ -141,7 +135,7 @@ namespace rayzngames
         // Update is called once per frame
         void Update()
         {
-
+            //アイテム情報の更新
 
             if ((ItemTime > 0))
             {
@@ -152,17 +146,14 @@ namespace rayzngames
                 }
             }
             else
-            {
+            {//仕様アイテムの初期化
                 if (UsedItem != Item.None)
                 {
                     ItemTime = 0;
-
+                    
                     switch (UsedItem)
                     {
-                        case Item.Assist:
-                            isAssist = false;
-                            CarObj.SetActive(false);
-                            break;
+
                         case Item.Big:
                             scale = Scale.Default;
                             SpeedLim = DefaultSpeedLim;
@@ -198,6 +189,8 @@ namespace rayzngames
             /// 以下は自プレイヤーのみの処理
             ///
 
+
+            //チェックポイントの判定用意
             Vector3 direction = Camera.main.transform.position - NameText.transform.position;
             NameText.transform.rotation = Quaternion.LookRotation(-direction);
 
@@ -208,7 +201,7 @@ namespace rayzngames
 
             var v = nowCheckPoint.nextCheckPoint.transform.position - transform.position;
             v.y = 0;
-            v = v.normalized * Time.deltaTime * 800;
+            v = v.normalized * Time.deltaTime * 80;
 
             //進行方向をすこし揺らす
             v = turnRot * v;
@@ -220,12 +213,13 @@ namespace rayzngames
             if (nowCheckPoint.CheckIfPassed(p0, p1)||nowCheckPoint.nextCheckPoint.CheckIfPassed(p0, p1))
             {
                 //チェックポイント通過
-  
+                SEManager.PlaySE(SEManager.SE.Rap);
 
                 if (nowCheckPoint.nextCheckPoint.CheckIfPassed(p0, p1))
                 {
                     nowCheckPoint = nowCheckPoint.nextCheckPoint.nextCheckPoint;
                     checkCount += 2;
+                    net.PassCheck();
                 }
                 else
                 {
@@ -236,26 +230,39 @@ namespace rayzngames
 
                 if (controllingBike)
                 {
+                    //全プレイヤーに通知
                     net.PassCheck();
                 }
 
                 if (nowCheckPoint == CheckPoint.StartPoint)
                 {
 
-                    SEManager.PlaySE(SEManager.SE.Rap);
+                   // SEManager.PlaySE(SEManager.SE.Rap);
                     rap++;
 
                     if (rap > 3)
                     {
-                        Debug.Log("ゴール！");
+                      
                         power = 0;
                         enabled = false;
                         if (controllingBike)
                         {
-                            //uiManager.GoalUI.SetActive(true);
+                             uiManager.GoalUI.SetActive(true);
                             isGoal = true;
+                            //全プレイヤーに通知
                             net.Goal(rank);
 
+                            if(rank == 1)
+                            {
+                                net.UpdateUserCount(1, 1);
+                            }
+                            else
+                            {
+                                net.UpdateUserCount(1, 0);
+                            }
+
+
+                            //リザルトに遷移
                             StartCoroutine(gameManager.MoveResult());
 
                             net.GoalPlayerList[net.roomModel.ConnectionId] = net.myself;
@@ -265,9 +272,9 @@ namespace rayzngames
                     }
                    
                     uiManager.UpdateRapTex(rap);
-                    Debug.Log("一周");
+            
                 }
-                Debug.Log("通過");
+
 
             }
 
@@ -300,7 +307,7 @@ namespace rayzngames
                 power = 0;
             }
 
-
+            //  パワーゲージのUI更新
             if (downTime > 0)
             {
                 uiManager.UpdatePowerSprite(0);
@@ -311,11 +318,11 @@ namespace rayzngames
                 {
                     uiManager.UpdatePowerSprite(3);
                 }
-                else if (power > maxPower * 0.4f && power <= maxPower * 0.8f)
+                else if (power > maxPower * 0.6f && power <= maxPower * 0.8f)
                 {
                     uiManager.UpdatePowerSprite(2);
                 }
-                else if (power <= maxPower * 0.4f)
+                else if (power <= maxPower * 0.6f)
                 {
                     uiManager.UpdatePowerSprite(1);
                 }
@@ -326,7 +333,7 @@ namespace rayzngames
             uiManager.UpdateSpeedSlider(bicycle.currentSpeed);
 
             if (!gameManager.isStart)
-            {
+            {//スタート前の移動制限
                 rb.linearVelocity = new Vector3(0,rb.linearVelocity.y,0);
                 rb.angularVelocity = Vector3.zero;
                 return; 
@@ -334,7 +341,7 @@ namespace rayzngames
 
 
             if (!isStartDash)
-            {
+            {//スタートダッシュ
                 if(power >= maxPower * 0.7f)
                 {
                     
@@ -349,7 +356,7 @@ namespace rayzngames
             if ((!bicycle.braking && power >= 0))
             {
                 if (SlipTime <= 0)
-                {
+                {//パワーをもとにスピード加算
                     bicycle.verticalInput = power;
 
                     if (bicycle.currentSpeed <= SpeedLim * 0.6f && power >= maxPower * 0.7f)
@@ -388,7 +395,7 @@ namespace rayzngames
             }
 
 
-
+            //ドリフト操作
             if (isDrift)
             {
                 Drift();
@@ -408,13 +415,15 @@ namespace rayzngames
             }
 
             if (acceleTime >= 0)
-            {
+            {//加速
                 rb.AddForce(transform.forward * accelePower, ForceMode.Force);
                 acceleTime -= Time.deltaTime;
             }
 
+            //速度ごとのUI変更
+
             if (bicycle.currentSpeed >= SpeedLim)
-            {
+            {//速度制限
 
                 Debug.Log("早すぎ");
                 rb.AddForce(transform.forward * (-30000f), ForceMode.Force);
@@ -444,12 +453,14 @@ namespace rayzngames
             }
 
 
-
+            //飛び上がり対策
             if (rb.linearVelocity.y >= 0.5f && !inSlope)
             {
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x,0,rb.linearVelocity.z);
             }
 
+
+            //SS動作
             if (SStime >= 0)
             {
                 rb.linearVelocity = rb.linearVelocity + (transform.forward * 0.001f) ;
@@ -464,14 +475,10 @@ namespace rayzngames
 
             turnRot = Quaternion.AngleAxis(Random.Range(-10f, 10f), Vector3.up);
 
-            if(isAssist)
-            {
-                HandleAssist();
-            }
-
-           // HandleAssist();
+            //大きさ変更
             ChengeScale();
 
+            //キープパワー使用時の処理
             if (isKeepPower)
             {
                 if(power <= maxPower * 0.9f)
@@ -485,6 +492,7 @@ namespace rayzngames
                 }
             }
             
+            //ブレーキ操作
             if(isBraking)
             {
                 Braking();
@@ -521,15 +529,17 @@ namespace rayzngames
                 {
 
                     bicycle.maxSteeringAngle = 60;
-                    bicycle.maxLeanAngle = 40;
+                    bicycle.maxLeanAngle = 50;
                    
 
                     if (bicycle.currentSteeringAngle >= 40 || bicycle.currentSteeringAngle <= -40)
-                    {
+                    {//ドリフト操作に切り替え
                         bicycle.turnSmoothing = 0;
                         bicycle.leanSmoothing = 0;
                         isDrift = true;
                         bicycle.braking = false;
+
+                        //ドリフト時の演出追加
 
                         bicycle.rearTrail.emitting = true;
 
@@ -547,7 +557,7 @@ namespace rayzngames
 
 
             if (bicycle.currentSpeed <= 1f || power <= 10)
-            {
+            {//バック走行
                 bicycle.braking = false;
                 bicycle.verticalInput = BackPower;
      
@@ -573,7 +583,7 @@ namespace rayzngames
                 bicycle.leanSmoothing = 0.3f;
 
                 if (isDrift)
-                {
+                {//ドリフト終了後の加速
                     accelePower = 0;
 
                     if (DriftTime >= 5)
@@ -608,6 +618,8 @@ namespace rayzngames
                     }
 
                     isDrift = false;
+
+                    //ドリフト時の演出解除
 
                     bicycle.rearTrail.emitting = false;
                     if (bicycle.rearSmoke.isPlaying) { bicycle.rearSmoke.Stop(); }
@@ -657,25 +669,27 @@ namespace rayzngames
             DriftTime += Time.deltaTime;
             bicycle.braking = false ;
 
-            if (bicycle.horizontalInput >= 0.1f)
-            {
+            //内側の移動が弱く感じたので内側の移動を強くしてます
+
+            if (Input.GetAxis("Horizontal") >= 0.1f)
+            {//右方向操作
                 if (bicycle.currentSteeringAngle >= 40)
                 {
-                    rb.AddForce((transform.right) * 90000, ForceMode.Force);
-                    transform.Rotate(new Vector3(0, 0.25f, 0));
+                    rb.AddForce((transform.right) * 150000, ForceMode.Force);
+                    transform.Rotate(new Vector3(0, 0.7f, 0));
                 }
-                rb.AddForce((transform.right) * 40000, ForceMode.Force);
-                
-               
+                rb.AddForce((transform.right) * 60000, ForceMode.Force);
+                rb.angularVelocity = rb.angularVelocity + (transform.right * 0.075f);
+
             }
             else if (bicycle.horizontalInput <= -0.1f)
-            {
+            {//左方向操作
                 if(bicycle.currentSteeringAngle <= -40)
                 {
-                    rb.AddForce((transform.right) * -90000, ForceMode.Force);
-                    transform.Rotate(new Vector3(0, -0.25f, 0));
+                    rb.AddForce((transform.right) * -150000, ForceMode.Force);
+                    transform.Rotate(new Vector3(0, -0.7f, 0));
                 }
-                rb.AddForce((transform.right) * -40000, ForceMode.Force);
+                rb.AddForce((transform.right) * -60000, ForceMode.Force);
                 rb.angularVelocity = rb.angularVelocity +(-transform.right*0.075f);
                 
             }
@@ -705,7 +719,7 @@ namespace rayzngames
             rb = GetComponent<Rigidbody>();
 
             if (SceneManager.GetActiveScene().name == "MatcingScene"|| SceneManager.GetActiveScene().name == "ResultScene")
-            {
+            {//ゲーム中以外は操作不可にする
                 rb.isKinematic = true;
                 rb.useGravity = false;
                 enabled = false;
@@ -728,7 +742,6 @@ namespace rayzngames
             nowCheckPoint = CheckPoint.StartPoint;
 
             isStartDash = false;
-            isAssist = false;
             isKeepPower = false;
 
             if(controllingBike)
@@ -754,35 +767,6 @@ namespace rayzngames
          
         }
 
-        /// <summary>
-        /// ハンドルアシスト操作
-        /// </summary>
-        void HandleAssist()
-        {
-           
-
-            var p = (transform.position-nowCheckPoint.nextCheckPoint.transform.position).normalized;
-
-            float dist = Vector3.Dot(p,nowCheckPoint.nextCheckPoint.forward);
-
-
-            Vector3 targetPos = nowCheckPoint.nextCheckPoint.transform.position + p * dist;
-
-            targetPos = new Vector3(targetPos.x, transform.position.y, targetPos.z);
-
-           this.transform.DOLookAt(targetPos, 1f);
-
-            Vector3 movePos= Vector3.MoveTowards(
-                transform.position,
-                targetPos,
-                assistPower*Time.deltaTime
-                );
-
-            movePos -= transform.forward * assistPower * Time.deltaTime;
-            
-            transform.position = movePos;
-            CarObj.transform.rotation = new Quaternion(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z,-transform.rotation.w);
-        }
 
         /// <summary>
         /// 大きさの変更
@@ -808,7 +792,7 @@ namespace rayzngames
                     }
                     break;
                 case Scale.Small:
-                    if (transform.localScale.z > 0.3f)
+                    if (transform.localScale.z > 0.5f)
                     {
                         transform.localScale -= new Vector3(0.01f, 0.01f, 0.01f);
                     }
@@ -845,13 +829,7 @@ namespace rayzngames
            
             switch (HaveItem)
             {
-                case Item.Assist:
-                    ItemTime = 10;
-                    isAssist = true;
-                    uiManager.SetUsingItem((int)Item.Assist);
-                    CarObj.SetActive(true);
-                    net.PutItem();
-                    break;
+    
                 case Item.Big:
                     ItemTime = 10;
                     scale = Scale.Big;
@@ -881,6 +859,7 @@ namespace rayzngames
                     isKeepPower = true;
                     uiManager.SetUsingItem((int)Item.KeepPower);
                     ElectroObj.SetActive(true);
+                    SEManager.PlaySE(SEManager.SE.Erectlo);
                     net.PutItem();
                     break;
                     case Item.None:
@@ -904,12 +883,7 @@ namespace rayzngames
         {
             switch (Type)
             {
-                case (int)Item.Assist:
-                    ItemTime = 10;
-                    isAssist = true;
-                  
-                    CarObj.SetActive(true);
-                    break;
+            
                
                 case (int)Item.KeepPower:
                     ItemTime = 10;

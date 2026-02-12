@@ -25,6 +25,7 @@ public class SEManager : MonoBehaviour
         Damage,
         Rap,
         Goal,
+        Erectlo,
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -44,6 +45,10 @@ public class SEManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// SEçƒê∂
+    /// </summary>
+    /// <param name="type">SEÇÃéÌóﬁ</param>
     static public void PlaySE(SE type)
     {
         audioSource.PlayOneShot(clipList[(int)type]);

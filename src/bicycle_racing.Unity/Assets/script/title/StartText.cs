@@ -17,16 +17,20 @@ public class StartText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //テキストの点滅
         text.color = GetTextColorAlpha(text.color);
         outline.effectColor = GetTextColorAlpha(outline.effectColor);
     }
 
+    /// <summary>
+    /// テキストのカラー変更
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
     Color GetTextColorAlpha(Color color)
     {
         time += Time.deltaTime * speed * 5.0f;
         color.a = Mathf.Sin(time) + 1.5f;
-
-       
 
         return color;
     }

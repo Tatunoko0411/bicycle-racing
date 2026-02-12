@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     public bool isStart;
     float WaitTime;
-    float MaxWaitTime = 3.0f;
+    float MaxWaitTime = 4.0f;
     bool allGoal;
 
     public List<BikeController> bikeControllers = new List<BikeController>();
